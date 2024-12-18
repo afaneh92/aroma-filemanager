@@ -115,7 +115,6 @@ typedef uchar * ucharp;
 #define AROMA_THEME_CNT           24
 #define MAX_FILE_GETPROP_SIZE     65536
 
-
 //-- CALIB MATRIX
 typedef struct {
   float An;     /* A = An/Divider */
@@ -130,7 +129,6 @@ typedef struct {
   float x;
   float y;
 } AW_CALIBPOINT, *AW_CALIBPOINTP;
-
 
 //
 // AROMA Canvas Structure
@@ -174,7 +172,6 @@ typedef struct {
   byte  * b;       // Blue Channel
   byte  * a;       // Alpha Channel
 } PNGCANVAS, * PNGCANVASP;
-
 
 //
 // AROMA PNG Font Canvas Structure
@@ -246,7 +243,6 @@ typedef struct {
   dword msg;      // Window Message for postmessage
 } ATEV;
 
-
 //
 // Math Macro
 //
@@ -313,7 +309,6 @@ void ag_txtxy(int * x, int * y, int maxwidth, const char * ss, byte isbig, int h
 #define ATEV_MESSAGE  30
 #define KEY_CENTER    232
 
-
 //
 // AROMA Kinetic Library Structures
 //
@@ -342,7 +337,6 @@ typedef struct {
 #define aw_gd(msg)      ((byte) (((word) (msg))>>8))
 #define aw_gl(msg)      ((byte) ((msg) >> 16))
 #define aw_gh(msg)      ((byte) (((dword) (msg))>>24))
-
 
 //
 // AROMA Main Configuration Structure
@@ -419,8 +413,6 @@ typedef struct  {
   char        themename[64];
 } AC_CONFIG;
 
-
-
 //
 // AROMA Window Control Callback Typedef
 //
@@ -429,7 +421,6 @@ typedef void  (*AC_ONBLUR)(void *);
 typedef byte  (*AC_ONFOCUS)(void *);
 typedef void  (*AC_ONDRAW)(void *);
 typedef void  (*AC_ONDESTROY)(void *);
-
 
 //
 // AROMA Window Structure
@@ -470,7 +461,6 @@ typedef struct {
   byte          forceNS;      // Force to Stop Scroll
   void     *    d;            // Control Specific Data
 } ACONTROL, *ACONTROLP;
-
 
 //#######################################################//
 //##                                                   ##//
@@ -515,7 +505,6 @@ char * aui_parsepropstring(char * buffer, char * key);
 char * aui_readfromzip(char * name);
 void aui_drawnav(CANVAS * bg, int x, int y, int w, int h);
 char * aui_getvar(char * name);
-
 
 //-- .9.png struct
 typedef struct {
@@ -575,7 +564,6 @@ byte    aft_load(const char * source_name, int size, byte isbig, char * relative
 byte aft_drawfont(CANVAS * _b, byte isbig, int fpos, int xpos, int ypos, color cl, byte underline, byte bold, byte italic, byte lcd);
 byte aft_isrtl(int c, byte checkleft);
 
-
 //
 // AROMA PNG Font Functions
 //
@@ -616,14 +604,12 @@ void ag_canvas(CANVAS * c, int w, int h); // Create Canvas
 void ag_ccanvas(CANVAS * c);              // Release Canvas
 void ag_blank(CANVAS * c);                // Set Blank into Canvas memset(0)
 
-
 //
 // AROMA Canvas Manipulation Functions
 //
 color  *  agxy(CANVAS * _b, int x, int y);                            // Get Pixel Pointer
 byte      ag_setpixel(CANVAS * _b, int x, int y, color cl);           // Set Pixel Color
 byte      ag_subpixel(CANVAS * _b, int x, int y, color cl, byte l);   // Set Pixel Color with Opacity
-
 
 //
 // AROMA Canvas Drawing Functions
@@ -872,7 +858,6 @@ ACONTROLP imgbtn_reinit(
   byte touchmsg
 );
 
-
 ACONTROLP accheck(
   AWINDOWP win,
   int x,
@@ -980,7 +965,6 @@ ACONTROLP acmenu(
 byte acmenu_add(ACONTROLP ctl, char * title, char * desc, char * img);
 int acmenu_getselectedindex(ACONTROLP ctl);
 
-
 ACONTROLP aclabel(
   AWINDOWP win,
   int x,
@@ -1053,12 +1037,8 @@ int aconsole_isescape(ACONTROLP ctl);
   fprintf(stdout, _AROMA_DEBUG_TAG "[V] " __VA_ARGS__); \
   fprintf(stdout, "\n");
 
-
-
-
 #define STRINGIFY(x) #x
 #define EXPAND(x) STRINGIFY(x)
-
 
 #include "libs/fb/engine.h"
 #include "libs/fb/fb.h"
