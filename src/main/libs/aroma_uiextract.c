@@ -20,7 +20,8 @@
  * AROMA File Manager : Extract File
  *
  */
-#include "../../../libs/minzip/Zip.h"
+#include "minzip/Zip.h"
+#include "minzip/SysUtil.h"
 typedef struct{
   char * zip_path;
   char * bname;
@@ -90,7 +91,12 @@ static void * aui_extract_thread(void * cookie){
   AUIEXTRACTP uix=(AUIEXTRACTP) cookie;
   
   ZipArchive fzip;
-  if (mzOpenZipArchive(uix->zip_path, &fzip) != 0) {
+  MemMapping map;
+  if (sysMapFile(uix->zip_path, &map) != 0) {
+    LOGE("failed to map file\n");
+    return -1;
+  }
+  if (mzOpenZipArchive(map.addr, map.length, &fzip) != 0) {
     while (!atouch_send_message(103)) {
       usleep(100000);
     }
