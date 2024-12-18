@@ -20,7 +20,8 @@
  * AROMA File Manager : Extract File
  *
  */
-#include "../../../libs/minzip/Zip.h"
+#include "minzip/Zip.h"
+#include "minzip/SysUtil.h"
 typedef struct{
   char * zip_path;
   char * bname;
@@ -90,7 +91,12 @@ static void * aui_extract_thread(void * cookie){
   AUIEXTRACTP uix=(AUIEXTRACTP) cookie;
   
   ZipArchive fzip;
-  if (mzOpenZipArchive(uix->zip_path, &fzip) != 0) {
+  MemMapping map;
+  if (sysMapFile(uix->zip_path, &map) != 0) {
+    LOGE("failed to map file\n");
+    return -1;
+  }
+  if (mzOpenZipArchive(map.addr, map.length, &fzip) != 0) {
     while (!atouch_send_message(103)) {
       usleep(100000);
     }
@@ -112,10 +118,15 @@ static void * aui_extract_thread(void * cookie){
     // snprintf(uix->path,256,"%s/",uix->desttarget);
     aui_setpath(uix->path, "", uix->desttarget, 1);
     
-    uix->count=mzZipEntryCount(&fzip);
+    uix->count=fzip.numEntries;
     int i;
     for (i=0;((i<uix->count)&&(uix->status>0));i++){
-      const ZipEntry* ze = mzGetZipEntryAt(&fzip,i);
+      const ZipEntry* ze;
+      if (i < fzip.numEntries) {
+        ze = fzip.pEntries + i;
+      } else {
+        ze = NULL;
+      }
       char filename[1024];
       char dest_filename[1024];
       memcpy(filename,ze->fileName,ze->fileNameLen);
@@ -143,7 +154,8 @@ static void * aui_extract_thread(void * cookie){
         char * dn = dirname(abs_entry);
         mkpath(dn, EXTRACT_DIRMODE); /* create parent path */
         free(dn);
-        if (mzIsZipEntrySymlink(ze)){
+
+        if ((ze->versionMadeBy & 0xff00) == (3 << 8)){
           /* symlink */
           if (ze->uncompLen!=0){
             char *linkTarget = malloc(ze->uncompLen+1);
