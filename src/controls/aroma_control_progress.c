@@ -20,7 +20,7 @@
  * AROMA UI: Progress Bar
  *
  */
-#include "../aroma.h"
+#include <aroma.h>
 
 /***************************[ BUTTON ]**************************/
 typedef struct {

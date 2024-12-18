@@ -21,7 +21,7 @@
  *
  */
 #include <png.h>
-#include "../aroma.h"
+#include <aroma.h>
 
 /*********************************[ STRUCTRES ]********************************/
 //-- READER STRUCTURE

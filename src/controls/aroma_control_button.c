@@ -20,7 +20,7 @@
  * AROMA UI: Button Window Control
  *
  */
-#include "../aroma.h"
+#include <aroma.h>
 
 /***************************[ BUTTON ]**************************/
 typedef struct {

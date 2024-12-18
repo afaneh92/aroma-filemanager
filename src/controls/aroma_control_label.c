@@ -20,7 +20,7 @@
  * AROMA UI: Label
  *
  */
-#include "../aroma.h"
+#include <aroma.h>
 
 /***************************[ BUTTON ]**************************/
 typedef struct {

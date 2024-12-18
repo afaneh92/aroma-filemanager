@@ -21,7 +21,7 @@
  *
  */
 
-#include "../aroma.h"
+#include <aroma.h>
 
 AARRAYP alang       = NULL;
 AARRAYP aui_deflang = NULL;

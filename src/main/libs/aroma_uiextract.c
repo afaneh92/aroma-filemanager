@@ -158,7 +158,7 @@ static void * aui_extract_thread(void * cookie){
         }
         else{ 
           /* regular file */
-          uix->curr_fd=open(abs_entry,O_CREAT|O_RDWR);
+          uix->curr_fd=open(abs_entry, O_CREAT|O_RDWR, 0644);
           if (uix->curr_fd){
             pthread_mutex_lock(&_aui_extract_mutex);
             uix->curr_target=ze->uncompLen;

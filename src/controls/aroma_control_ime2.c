@@ -20,7 +20,7 @@
  * AROMA UI: IME
  *
  */
-#include "../aroma.h"
+#include <aroma.h>
 
 /***************************[ IME ]**************************/
 #define ACIME2_BTNCNT  39

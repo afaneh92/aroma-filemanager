@@ -28,7 +28,7 @@
 #include <sys/poll.h>
 #include <linux/input.h>
 #include <pthread.h>
-#include "../aroma.h"
+#include <aroma.h>
 
 //-- Input Device
 #include "input/input_device.c"

@@ -20,7 +20,7 @@
  * AROMA UI: CONSOLE
  *
  */
-#include "../aroma.h"
+#include <aroma.h>
 /* Internal representation of the screen */
 
 #define ESC_BUF_SIZ   256

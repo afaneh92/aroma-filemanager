@@ -24,7 +24,7 @@
 #ifndef _AROMA_NODEBUG
 #include <mcheck.h>
 #endif
-#include "../aroma.h"
+#include <aroma.h>
 
 //*
 //* GLOBAL UI VARIABLES
@@ -130,8 +130,17 @@ int main(int argc, char ** argv) {
   LOGS("Saving Arguments\n");
   snprintf(currArgv[0], 255, "%s", argv[1]);
   snprintf(currArgv[1], 255, "%s", argv[3]);
+
   //* Init Pipe & Show Splash Info
   a_splash(argv[2]);
+
+  //* Mute Parent Thread
+  if (parent_pid) {
+    LOGS("Mute Parent\n");
+    aroma_memory_parentpid(parent_pid);
+    kill(parent_pid, 19);
+  }
+
   //* Init Zip
   LOGS("Open Archive\n");
   
@@ -139,14 +148,7 @@ int main(int argc, char ** argv) {
     //* Initializing All Resources
     LOGS("Initializing Resource\n");
     a_init_all();
-    
-    //* Mute Parent Thread
-    if (parent_pid) {
-      LOGS("Mute Parent\n");
-      aroma_memory_parentpid(parent_pid);
-      kill(parent_pid, 19);
-    }
-    
+
     //* Starting AROMA FILEMANAGER UI
     LOGS("Starting Interface\n");
     
@@ -173,19 +175,20 @@ int main(int argc, char ** argv) {
       LOGS("Starting Release\n");
       a_release_all();
      }
-    
-    //* Unmute Parent
-    if (parent_pid) {
-      LOGS("Unmute Parent\n");
-      kill(parent_pid, 18);
-    }
-    
+
     //* Wait Until Clean Up
     usleep(600000);
   }
   else {
     LOGE("Cannot Open Archive\n");
   }
+
+  //* Unmute Parent
+  if (parent_pid) {
+    LOGS("Unmute Parent\n");
+    kill(parent_pid, 18);
+  }
+
   //* REMOVE AROMA TEMPORARY
   LOGS("Cleanup Temporary\n");
   remove_directory(AROMA_TMP);

@@ -1,35 +1,23 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-  ## Check for ARM NEON
-  AROMA_ARM_NEON      := false
-  ifeq ($(ARCH_ARM_HAVE_NEON),true)
-    AROMA_ARM_NEON    := true
-  endif
-  
-  ##
-  ## Force Compiling Without ARM NEON
-  ##   -- Uncomment This Line --
-  ##
-  # AROMA_ARM_NEON      := false
-  #
-  
-  ##
-  ## VERSIONING
-  ##
-  AROMA_NAME    := AROMA Filemanager
-  AROMA_VERSION := 1.92
-  AROMA_BUILD   := $(shell date +%y%m%d%H)
-  AROMA_CN      := Degung Gamelan
+# LOCAL PATH COPY
+AROMA_FILEMANAGER_LOCALPATH := $(LOCAL_PATH)
 
-  ## LOCAL PATH COPY
-  AROMAFM_LOCALPATH := $(LOCAL_PATH)
-  
-  ## binary output path
-  AROMA_OUT_PATH := $(TARGET_RECOVERY_ROOT_OUT)/../../aromafm_out
+# Check for ARM NEON
+AROMA_ARM_NEON := false
+ifeq ($(ARCH_ARM_HAVE_NEON),true)
+    AROMA_ARM_NEON := true
+endif
 
-  ## ZLIB SOURCE FILES
-  LOCAL_SRC_FILES := 	\
+# VERSIONING
+AROMA_NAME := AROMA Filemanager
+AROMA_VERSION := 1.92
+AROMA_BUILD := $(shell date +%y%m%d%H)
+AROMA_CN := Degung Gamelan
+
+# ZLIB SOURCE FILES
+LOCAL_SRC_FILES := \
     libs/zlib/adler32.c \
     libs/zlib/crc32.c \
     libs/zlib/infback.c \
@@ -37,13 +25,14 @@ include $(CLEAR_VARS)
     libs/zlib/inflate.c \
     libs/zlib/inftrees.c \
     libs/zlib/zutil.c
-  ## ZLIB NEON SOURCE
-  ifeq ($(AROMA_ARM_NEON),true)
+
+# ZLIB NEON SOURCE
+ifeq ($(AROMA_ARM_NEON),true)
     LOCAL_SRC_FILES += libs/zlib/inflate_fast_copy_neon.s
-  endif
-  
-  ## PNG SOURCE FILES
-  LOCAL_SRC_FILES += \
+endif
+
+# PNG SOURCE FILES
+LOCAL_SRC_FILES += \
     libs/png/png.c \
     libs/png/pngerror.c \
     libs/png/pnggccrd.c \
@@ -57,22 +46,26 @@ include $(CLEAR_VARS)
     libs/png/pngset.c \
     libs/png/pngtrans.c \
     libs/png/pngvcrd.c
-  ## PNG NEON SOURCE
-  ifeq ($(AROMA_ARM_NEON),true)
+
+# PNG NEON SOURCE
+ifeq ($(AROMA_ARM_NEON),true)
     LOCAL_SRC_FILES += libs/png/png_read_filter_row_neon.s
-  endif
-    
-  ## MINUTF8 & MINZIP SOURCE FILES
-  LOCAL_SRC_FILES += \
-    libs/minutf8/minutf8.c \
+endif
+
+# MINUTF8 SOURCE FILES
+LOCAL_SRC_FILES += \
+    libs/minutf8/minutf8.c
+
+# MINZIP SOURCE FILES
+LOCAL_SRC_FILES += \
     libs/minzip/DirUtil.c \
     libs/minzip/Hash.c \
     libs/minzip/Inlines.c \
     libs/minzip/SysUtil.c \
     libs/minzip/Zip.c
-  
-  ## FREETYPE SOURCE FILES
-  LOCAL_SRC_FILES += \
+
+# FREETYPE SOURCE FILES
+LOCAL_SRC_FILES += \
     libs/freetype/autofit/autofit.c \
     libs/freetype/base/basepic.c \
     libs/freetype/base/ftapi.c \
@@ -93,11 +86,10 @@ include $(CLEAR_VARS)
     libs/freetype/smooth/smooth.c \
     libs/freetype/truetype/truetype.c \
     libs/freetype/base/ftlcdfil.c
-  
-  ## AROMA CONTROLS SOURCE FILES
-  LOCAL_SRC_FILES += \
-    src/aroma_openpty.c \
-	  src/controls/aroma_controls.c \
+
+# AROMA CONTROLS SOURCE FILES
+LOCAL_SRC_FILES += \
+    src/controls/aroma_controls.c \
     src/controls/aroma_control_button.c \
     src/controls/aroma_control_check.c \
     src/controls/aroma_control_checkbox.c \
@@ -113,9 +105,9 @@ include $(CLEAR_VARS)
     src/controls/aroma_control_progress.c \
     src/controls/aroma_control_textbox.c \
     src/controls/aroma_control_threads.c
-  
-  ## AROMA LIBRARIES SOURCE FILES
-  LOCAL_SRC_FILES += \
+
+# AROMA LIBRARIES SOURCE FILES
+LOCAL_SRC_FILES += \
     src/libs/aroma_array.c \
     src/libs/aroma_freetype.c \
     src/libs/aroma_graph.c \
@@ -125,54 +117,62 @@ include $(CLEAR_VARS)
     src/libs/aroma_memory.c \
     src/libs/aroma_png.c \
     src/libs/aroma_zip.c
-  
-  ## AROMA FILEMANAGER SOURCE FILES
-  LOCAL_SRC_FILES += \
+
+# AROMA FILEMANAGER SOURCE FILES
+LOCAL_SRC_FILES += \
     src/main/aroma.c \
     src/main/aroma_ui.c
 
-  ## MODULE SETTINGS
-  LOCAL_MODULE                  := aroma_filemanager
-  LOCAL_MODULE_TAGS             := eng
-  LOCAL_FORCE_STATIC_EXECUTABLE := true
-  
-  ## INCLUDES & OUTPUT PATH
-  LOCAL_C_INCLUDES              := $(AROMAFM_LOCALPATH)/include
-  LOCAL_MODULE_PATH             := $(AROMA_OUT_PATH)
-  
-  ## COMPILER FLAGS
-  LOCAL_CFLAGS                  := -O2 
-  LOCAL_CFLAGS                  += -DFT2_BUILD_LIBRARY=1 -DDARWIN_NO_CARBON 
-  LOCAL_CFLAGS                  += -fdata-sections -ffunction-sections
-  LOCAL_CFLAGS                  += -Wl,--gc-sections -fPIC -DPIC
-  LOCAL_CFLAGS                  += -D_AROMA_NODEBUG
-  
-  ## SET VERSION
-  LOCAL_CFLAGS += -DAROMA_NAME="\"$(AROMA_NAME)\""
-  LOCAL_CFLAGS += -DAROMA_VERSION="\"$(AROMA_VERSION)\""
-  LOCAL_CFLAGS += -DAROMA_BUILD="\"$(AROMA_BUILD)\""
-  LOCAL_CFLAGS += -DAROMA_BUILD_CN="\"$(AROMA_CN)\""
-  
-  ifeq ($(AROMA_ARM_NEON),true)
-    LOCAL_CFLAGS                  += -mfloat-abi=softfp -mfpu=neon -D__ARM_HAVE_NEON
-  endif
-  
-  ## INCLUDED LIBRARIES
-  LOCAL_STATIC_LIBRARIES        := libm libc
-  
-## Remove Old Build
-$(shell rm -rf $(PRODUCT_OUT)/obj/EXECUTABLES/$(LOCAL_MODULE)_intermediates)
+# MODULE SETTINGS
+LOCAL_MODULE := aroma_filemanager
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)
+LOCAL_MODULE_TAGS := eng
+LOCAL_FORCE_STATIC_EXECUTABLE := true
 
-## Create zip installer
-AROMA_DEVICE_NAME   := $(shell echo $(TARGET_PRODUCT) | cut -d _ -f 2)
-AROMA_ZIP_FILE      := $(AROMA_OUT_PATH)/aromafm_$(AROMA_DEVICE_NAME).zip
-$(AROMA_ZIP_FILE): aroma_filemanager
-	$(info )
-	$(info Making Aroma Installer Zip...)
-	$(AROMAFM_LOCALPATH)/tools/android_building.sh $(AROMAFM_LOCALPATH) $(AROMA_OUT_PATH) $(AROMA_DEVICE_NAME)
-	$(info Install ----> $(AROMA_ZIP_FILE))
-	$(info )
+# INCLUDES
+LOCAL_C_INCLUDES := \
+    $(AROMA_FILEMANAGER_LOCALPATH)/include \
+    $(AROMA_FILEMANAGER_LOCALPATH)/src
 
-ALL_DEFAULT_INSTALLED_MODULES += $(AROMA_ZIP_FILE)
+# COMPILER FLAGS
+LOCAL_CFLAGS := -O2 
+LOCAL_CFLAGS += -DFT2_BUILD_LIBRARY=1 -DDARWIN_NO_CARBON 
+LOCAL_CFLAGS += -fdata-sections -ffunction-sections
+LOCAL_CFLAGS += -Wl,--gc-sections -fPIC -DPIC
+LOCAL_CFLAGS += -D_AROMA_NODEBUG
+
+ifeq ($(AROMA_ARM_NEON),true)
+    LOCAL_CFLAGS += -mfloat-abi=softfp -mfpu=neon -D__ARM_HAVE_NEON
+endif
+
+# SET VERSION
+LOCAL_CFLAGS += -DAROMA_NAME="\"$(AROMA_NAME)\""
+LOCAL_CFLAGS += -DAROMA_VERSION="\"$(AROMA_VERSION)\""
+LOCAL_CFLAGS += -DAROMA_BUILD="\"$(AROMA_BUILD)\""
+LOCAL_CFLAGS += -DAROMA_BUILD_CN="\"$(AROMA_CN)\""
+
+# INCLUDED LIBRARIES
+LOCAL_STATIC_LIBRARIES := libm libc
+  
+# Remove Old Build
+ifeq ($(MAKECMDGOALS),$(LOCAL_MODULE))
+    $(shell rm -rf $(PRODUCT_OUT)/obj/EXECUTABLES/$(LOCAL_MODULE)_intermediates)
+    $(shell rm -rf $(PRODUCT_OUT)/aroma-fm.zip)
+endif
 
 include $(BUILD_EXECUTABLE)
+
+include $(CLEAR_VARS)
+
+AROMA_ZIP_TARGET := $(PRODUCT_OUT)/aroma-fm.zip
+$(AROMA_ZIP_TARGET):
+	@echo "----- Making aroma filemanager zip ------"
+	$(hide) rm -rf $(PRODUCT_OUT)/assets
+	$(hide) rm -rf $(PRODUCT_OUT)/aroma-fm.zip
+	$(hide) cp -R $(AROMA_FILEMANAGER_LOCALPATH)/assets/ $(PRODUCT_OUT)/assets/
+	$(hide) cp $(PRODUCT_OUT)/aroma_filemanager $(PRODUCT_OUT)/assets/META-INF/com/google/android/update-binary
+	$(hide) pushd $(PRODUCT_OUT)/assets/ && zip -r9 ../aroma-fm.zip . && popd
+	@echo "Made flashable aroma-fm.zip: $@"
+
+.PHONY: aroma_filemanager_zip
+aroma_filemanager_zip: $(AROMA_ZIP_TARGET)

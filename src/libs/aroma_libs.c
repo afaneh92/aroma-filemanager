@@ -25,7 +25,7 @@
 // #include <sys/statvfs.h>
 #include <dirent.h>
 #include <sys/stat.h>
-#include "../aroma.h"
+#include <aroma.h>
 
 int max(int a, int b) {
   return (a > b) ? a : b;
