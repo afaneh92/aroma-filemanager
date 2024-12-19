@@ -150,7 +150,7 @@ void actext_ondraw(void * x) {
   int minpadding = max(acfg()->roundsz, 4);
   int agdp3 = (agdp() * minpadding);
   int agdp6 = (agdp() * (minpadding * 2));
-  int agdpX = agdp6;
+  //int agdpX = agdp6;
   
   if ((d->focused) && (!d->isFixedText)) {
     ag_draw(pc, &d->control_focused, ctl->x, ctl->y);
@@ -163,9 +163,9 @@ void actext_ondraw(void * x) {
   
   if ((d->maxScrollY > 0) || (d->forceGlowTop)) {
     //-- Glow
-    int i;
+    //int i;
     byte isST = (d->scrollY >= agdp3) ? 1 : 0;
-    byte isSB = (d->scrollY <= d->maxScrollY - agdp3) ? 1 : 0;
+    //byte isSB = (d->scrollY <= d->maxScrollY - agdp3) ? 1 : 0;
     
     if (d->forceGlowTop) {
       isST = 1;

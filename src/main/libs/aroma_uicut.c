@@ -173,7 +173,6 @@ auido_show_cut(byte * copy_status, char ** source_path, char ** dest_path,
   ACONTROLP ovrPrc =
     aclabel(hWin, txtX2, curY, txtW2, txtH, "", 0, 1, 3, acfg()->winfg);
   curY += txtH + hpad;
-  int halfW = defW / 2;
   ACONTROLP infPrc =
     aclabel(hWin, cliX, curY, cliW, txtH, "", 0, 1, 2,
             acfg()->textfg_gray);
@@ -531,7 +530,7 @@ void auido_cut(char * dest, byte * tool_state) {
         free(real_dn);
         free(dest_bn);
         free(dest_dn);
-        int lspath = strlen(real_source);
+        size_t lspath = strlen(real_source);
         
         if (lspath < strlen(real_dest)) {
           char * ckd = strdup(real_dest);

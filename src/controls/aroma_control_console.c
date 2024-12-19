@@ -145,7 +145,7 @@ void csireset(ACONTROLP ctl) {
 }
 void tclearregion(ACONTROLP ctl, int x1, int y1, int x2, int y2) {
   ACONSOLEP   d  = (ACONSOLEP) ctl->d;
-  int x, y, temp;
+  int temp;
   
   if (x1 > x2) {
     temp = x1, x1 = x2, x2 = temp;
@@ -835,10 +835,7 @@ void aconsole_add(void * x, int c) {
     d->beep = 0;
     redrawit = 1;
   }
-  
-  /* Normal Char Handler */
-  int  chr     = 0;
-  
+
   switch (c) {
     case '\t':
       tputtab(ctl);

@@ -269,7 +269,7 @@ int aui_fetch(char * path, ACONTROLP FB, char * selfile) {
             }
           }
           afbox_add(FB, dname,
-                    ((desc ==
+                    (((void*)desc ==
                       NULL) ?
                      alang_get("symlink.error") :
                      desc), 0,

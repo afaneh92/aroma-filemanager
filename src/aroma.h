@@ -27,6 +27,8 @@
 //
 // Common Headers, Always Used
 //
+#include <ctype.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -34,6 +36,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <minutf8.h>
 #include <pthread.h>
 //
@@ -46,7 +49,6 @@
 #include FT_GLYPH_H
 
 #include <sys/ioctl.h>
-#include "aroma_pty.h"
 
 //
 // ARM NEON - Testing Only
