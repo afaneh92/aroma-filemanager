@@ -50,14 +50,8 @@
 
 #include <sys/ioctl.h>
 
-//
-// ARM NEON - Testing Only
-//
-#ifdef __ARM_NEON__
-#include <arm_neon.h>
-#endif
-
 #include "aroma_mem.h"
+#include "aroma_engine.h"
 
 // Defined in build command
 // #define _AROMA_NODEBUG
@@ -71,29 +65,10 @@
 //
 // Common Data Type
 //
-/*
-#define byte              unsigned char
-#define dword             unsigned int
-#define word              unsigned short
-#define color             unsigned short
-*/
-
-/* primitive unsigneds */
 typedef uint8_t byte;
+typedef uint32_t dword;
 typedef uint16_t word;
 typedef uint16_t color;
-typedef uint32_t dword;
-
-/* primitive pointers */
-typedef color * colorp;
-typedef byte * bytep;
-typedef word * wordp;
-typedef dword * dwordp;
-typedef void * voidp;
-
-/* unicode char */
-typedef uint32_t uchar;
-typedef uchar * ucharp;
 
 //
 // AROMA Main Configurations
@@ -1034,8 +1009,5 @@ int aconsole_isescape(ACONTROLP ctl);
 
 #define STRINGIFY(x) #x
 #define EXPAND(x) STRINGIFY(x)
-
-#include "libs/fb/engine.h"
-#include "libs/fb/fb.h"
 
 #endif // __AROMA_H__

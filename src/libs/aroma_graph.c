@@ -27,9 +27,9 @@
 #include <sys/mman.h>
 #include <pthread.h>
 #include <aroma.h>
+#include "aroma_fb.h"
 
 static int colorspace_positions[4] = {0, 0, 0, 0};
-#include "fb/fb.c"
 
 /*****************************[ GLOBAL VARIABLES ]*****************************/
 static dword                           ag_fbsz = 0;
@@ -93,7 +93,7 @@ int * ag_getcolorspace() {
   return colorspace_positions;
 }
 void ag_changecolorspace(int r, int g, int b, int a) {
-  LINUXFBDR_setrgbpos(libaroma_fb(),r,g,b);
+  libaroma_fb_changecolorspace(libaroma_fb(),r,g,b);
 }
 color ag_dodither_rgb(int x, int y, byte sr, byte sg, byte sb) {
   byte dither_xy = ((y & 7) << 3) + (x & 7);
@@ -180,15 +180,15 @@ byte ag_init() {
     return 0;
   }
   
-  ag_canvas(&ag_c, libaromafb()->w, libaromafb()->h);
-  ag_dp = floor( min(libaromafb()->w, libaromafb()->h) / 160);
+  ag_canvas(&ag_c, libaroma_fb()->w, libaroma_fb()->h);
+  ag_dp = floor( min(libaroma_fb()->w, libaroma_fb()->h) / 160);
   agclp = 2;
-  ag_fbsz = libaromafb()->sz*2;
-  ag_fbuf = libaromafb()->canvas;
+  ag_fbsz = libaroma_fb()->sz*2;
+  ag_fbuf = libaroma_fb()->canvas;
   ag_b    = (word *) malloc(ag_fbsz);
   ag_bz   = (word *) malloc(ag_fbsz);
-  ag_16w  = libaromafb()->w / 2;
-  ag_line_length = libaromafb()->w*2;
+  ag_16w  = libaroma_fb()->w / 2;
+  ag_line_length = libaroma_fb()->w*2;
   memcpy(ag_b, ag_fbuf, ag_fbsz);
   memcpy(ag_c.data, ag_fbuf, ag_fbsz);
     
@@ -533,9 +533,9 @@ void ag_busyprogress() {
 #ifdef LIBAROMA_CONFIG_OPENMP
   #pragma omp parallel for
 #endif
-  for (y=0;y<libaromafb()->h;y++){
-    int p=y*libaromafb()->w;
-    libaroma_alpha_const_line(y, libaromafb()->w,ag_fbuf+p,ag_b+p,ag_bz+p,alp);
+  for (y=0;y<libaroma_fb()->h;y++){
+    int p=y*libaroma_fb()->w;
+    libaroma_alpha_const_line(y, libaroma_fb()->w,ag_fbuf+p,ag_b+p,ag_bz+p,alp);
   }
   if (!ag_isbusy) {
     ag_sync();
@@ -606,22 +606,22 @@ void ag_refreshrate() {
   if (ag_isbusy == 0) {
     memcpy(ag_fbuf, ag_b, ag_fbsz);
     ag_drawcaret();
-    libaroma_sync();
+    libaroma_fb_sync();
   }
   else if (ag_isbusy == 2) {
     memcpy(ag_fbuf, ag_bz, ag_fbsz);
     ag_busyprogress();
-    libaroma_sync();
+    libaroma_fb_sync();
   }
   else if (ag_lastbusy < alib_tick() - 50) {
     ag_copybusy("Please Wait...");
     ag_isbusy = 2;
     memcpy(ag_fbuf, ag_bz, ag_fbsz);
-    libaroma_sync();
+    libaroma_fb_sync();
   }
   else if (ag_have_sync){
     ag_have_sync=0;
-    libaroma_sync();
+    libaroma_fb_sync();
   }
 }
 
@@ -655,7 +655,7 @@ static void * ag_sync_fade_thread(void * cookie) {
   
   for (i = 0; (i < (frame / 2)) && ag_sync_locked; i++) {
     byte perc = (255 / frame) * i;
-    libaroma_alpha_const(libaromafb()->sz,
+    libaroma_alpha_const(libaroma_fb()->sz,
       ag_b, ag_b, ag_c.data, perc);
     ag_have_sync = 1;
     ag_refreshrate();
@@ -876,12 +876,12 @@ void ag_blank(CANVAS * c) {
 
 //-- Width
 int agw() {
-  return libaromafb()->w;
+  return libaroma_fb()->w;
 }
 
 //-- Height
 int agh() {
-  return libaromafb()->h;
+  return libaroma_fb()->h;
 }
 
 int agdp() {
