@@ -89,7 +89,7 @@ LOCAL_CFLAGS += -DAROMA_BUILD="\"$(AROMA_BUILD)\""
 LOCAL_CFLAGS += -DAROMA_BUILD_CN="\"$(AROMA_CN)\""
 
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-implicit-function-declaration -Wno-pointer-sign
-LOCAL_CFLAGS += -Wno-format -Wno-int-conversion -Wno-pointer-arith -Wno-static-in-inline
+LOCAL_CFLAGS += -Wno-format -Wno-int-conversion -Wno-pointer-arith -Wno-static-in-inline -Wint-to-void-pointer-cast
 
 # INCLUDED LIBRARIES
 LOCAL_STATIC_LIBRARIES := libpng libminzip libft2_aroma_fm_static libm libc libz
