@@ -41,7 +41,7 @@ void auis_readinfo(char * out, char * path, char * dir) {
 void aui_show_setting() {
   printf("SHOW SETTINGS\n");
   //-- REDRAW BG
-  aui_setbg(NULL);
+  aui_setbg();
   //-- Main Variable
   AUI_VARS v;
   //-- Return Value
@@ -59,7 +59,7 @@ void aui_show_setting() {
   v.pthW = v.navW;
   v.navY = aui_minY + v.pad;
   v.btnW = floor(v.navW / 3);
-  int btnHlv = v.navW - (v.pad / 2);
+  //int btnHlv = v.navW - (v.pad / 2);
   v.hFileType = 0;
   v.btnFH = aui_cfg_btnFH();
   //-- Draw Navigation Bar

@@ -20,7 +20,8 @@
  * AROMA File Manager Terminal
  *
  */
-
+#include <pty.h>
+#include <aroma.h>
 
 /* Terminal Structure */
 typedef struct {
@@ -180,7 +181,7 @@ byte auiterm_init(AUITERMP p, const char * arg, const char * run_command) {
 /* Drawing */
 void auiterm_inittitle() {
   /* Redraw BG */
-  aui_setbg(NULL);
+  aui_setbg();
   char termtitle[200];
   snprintf(termtitle, 200, "<@center>%s</@>", alang_get("tools.terminal.title"));
   /* Set Title */
@@ -197,7 +198,6 @@ void aui_show_terminal(const char * basepath, const char * arg, const char * run
   int btnH = agdp() * 20;
   int wrkH = agh() - (aui_minY + btnH + pad * 2);
   int conH = round(wrkH / 1.75);
-  int imeH = wrkH - conH;
   int btnW = (agw() - pad * 2) / 4;
   int btnY = aui_minY + pad;
   int conY = aui_minY + btnH + pad * 2;
@@ -209,12 +209,6 @@ void aui_show_terminal(const char * basepath, const char * arg, const char * run
   imgbtn(hWin, pad + btnW, btnY, btnW, btnH, &UI_ICONS[12], "Esc",  4, 21);
   imgbtn(hWin, pad + btnW * 2, btnY, btnW, btnH, &UI_ICONS[14], "Clear",   4, 23);
   imgbtn(hWin, pad + btnW * 3, btnY, btnW, btnH, &UI_ICONS[0],  alang_get("close"), 4, 12);	//-- Close
-  /* Create IME2 */
-  ACONTROLP imebox = acime2(
-                       hWin,
-                       0, conY + conH, agw(), imeH,
-                       44
-                     );
   /* Init Shell */
   AUITERM p;
   p.active  = 0;

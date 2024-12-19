@@ -31,7 +31,7 @@
 #include <fcntl.h>
 #include <sys/sendfile.h>
 #include <errno.h>
-#include "../aroma.h"
+#include <aroma.h>
 
 //*
 //* GLONAL VARIABLES
@@ -97,7 +97,7 @@ typedef struct {
 #include "libs/aroma_uiabout.c"
 #include "libs/aroma_uiperm.c"
 #include "libs/aroma_uiterminal.c"
-#include "libs/aroma_uiextract.c"
+//#include "libs/aroma_uiextract.c"
 
 #include "libs/aroma_uimain.c"
 #include "libs/aroma_handler.c"
@@ -181,7 +181,7 @@ byte aui_start() {
         auido_cut(path, &tool_state);
       }
       else if (ret_show == 5) {
-        auido_del(path, &tool_state);
+        auido_del(&tool_state);
       }
       else if (ret_show == 6) {
         /* Terminal */
@@ -205,13 +205,13 @@ byte aui_start() {
         aui_show_terminal(path,"-a",command_file);
         back_ani = 1;
       }
-      else if (ret_show == 9) {
+      //else if (ret_show == 9) {
         /* Extract File */
-        char absfile[512];
-        snprintf(absfile,512,"%s%s",path,selfile);
-        printf("Extract File : %s\n", absfile);
-        auido_extract(absfile,selfile,&path);
-      }
+     //   char absfile[512];
+     //   snprintf(absfile,512,"%s%s",path,selfile);
+     //   printf("Extract File : %s\n", absfile);
+     //   auido_extract(absfile,selfile,&path);
+     // }
     }
     while (1);
     

@@ -20,7 +20,7 @@
  * AROMA UI: IME
  *
  */
-#include "../aroma.h"
+#include <aroma.h>
 
 /***************************[ IME ]**************************/
 #define ACIME_BTNCNT  33
@@ -489,7 +489,7 @@ void acime_drawbutton(ACIMEDP d, int x, int y, int w, int h, int id) {
     ag_roundgrad(&d->control_push, x + 1, y + 1, w - 2, h - 2,  acfg()->selectbg,       acfg()->selectbg_g,  acfg()->roundsz - 1);
   }
 }
-void acime_onblur(void * x) {}
+void acime_onblur() {}
 ACONTROLP acime(
   AWINDOWP win,
   int x, int y, int w, int h,

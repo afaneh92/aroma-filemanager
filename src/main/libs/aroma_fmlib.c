@@ -91,7 +91,7 @@ char * aui_readfromfs(char * name) {
     goto done;
   }
   
-  if (fread(buffer, 1, st.st_size, f) != st.st_size) {
+  if (fread(buffer, 1, (size_t)st.st_size, f) != (size_t)st.st_size) {
     fclose(f);
     goto done;
   }

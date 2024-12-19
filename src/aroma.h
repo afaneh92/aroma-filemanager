@@ -27,6 +27,8 @@
 //
 // Common Headers, Always Used
 //
+#include <ctype.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -34,6 +36,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <minutf8.h>
 #include <pthread.h>
 //
@@ -46,7 +49,6 @@
 #include FT_GLYPH_H
 
 #include <sys/ioctl.h>
-#include "aroma_pty.h"
 
 //
 // ARM NEON - Testing Only
@@ -186,7 +188,7 @@ typedef struct {
 //
 typedef struct {
   int sz;         // Data Size
-  byte * data;    // Data
+  char * data;    // Data
 } AZMEM;
 
 //
@@ -466,7 +468,6 @@ typedef struct {
 //
 FILE   *  apipe();        // Recovery pipe to communicate the command
 char   *  aui_readfromfs(char * name);
-char   *  aui_readfromzip(char * name);
 char   *  getArgv(int id);
 byte      aui_start();
 
@@ -518,6 +519,7 @@ typedef struct {
 byte      apng_load(PNGCANVAS * pngcanvas, char * imgname);       // Load PNG From Zip Item
 void      apng_close(PNGCANVAS * pngcanvas);                            // Release PNG Memory
 byte      apng_draw(CANVAS * _b, PNGCANVAS * p, int xpos, int ypos);    // Draw PNG Into Canvas
+void      apng_closefont(PNGFONTS * p);
 byte apng_stretch(
   CANVAS * _b,
   PNGCANVAS * p,
@@ -574,9 +576,11 @@ byte      ag_isfreetype(byte isbig);
 byte      ag_fontready(byte isbig);
 CANVAS  * agc();          // Get Main AROMA Graph Canvas
 byte      ag_init();      // Init AROMA Graph and Framebuffers
+byte      ag_draw_strecth_ex(CANVAS * d, CANVAS * s, int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh, byte alpha, byte withdest);
+byte      ag_draw_opa(CANVAS * d, CANVAS * s, int dx, int dy, byte alpha, byte withdest);
 byte      ag_close_thread(); // Close Graph Thread
 void      ag_close();     // Close AROMA Graph and Framebuffers
-void      ag_changecolorspace(int r, int g, int b, int a); // Change Color Space
+void      ag_changecolorspace(int r, int g, int b, __unused int a); // Change Color Space
 
 void      ag_sync();                        // Sync Main Canvas with Framebuffer
 int       agw();                            // Get Display X Resolution
@@ -672,7 +676,7 @@ byte ag_text_exl(CANVAS * _b, int maxwidth, int x, int y, const char * s, color 
 //
 struct  input_event;
 int     atouch_wait(ATEV * atev);
-int     atouch_wait_ex(ATEV * atev, byte calibratingtouch);
+int     atouch_wait_ex(ATEV * atev);
 byte    atouch_send_message(dword msg);
 int     vibrate(int timeout_ms);
 void set_vibrate_intensity(int i);
@@ -746,8 +750,11 @@ void      aw_destroy(AWINDOWP win);                         // Destroy Window
 void aw_show_ex(AWINDOWP win, byte anitype, int pos, ACONTROLP firstFocus);  // Show Window Custom Animation
 void      aw_show(AWINDOWP win);                            // Show Window
 void      aw_draw(AWINDOWP win);                            // Redraw Window
+void      aw_redraw(AWINDOWP win);                          // Redraw Window & Controls
 void      aw_add(AWINDOWP win, ACONTROLP ctl);              // Add Control into Window
 void      aw_post(dword msg);                               // Post Message
+void      aw_show_ex2(AWINDOWP win, byte anitype, int x, int pos, int w, int h, ACONTROLP firstFocus); // Show Window
+dword     aw_dispatch_ex(AWINDOWP win, int miny);           // Dispatch Messages
 dword     aw_dispatch(AWINDOWP win);                        // Dispatch Event, Message & Input
 byte      aw_touchoncontrol(ACONTROLP ctl, int x, int y);   // Calculate Touch Position
 byte      aw_setfocus(AWINDOWP win, ACONTROLP ctl);         // Set Focus into Control
@@ -850,6 +857,8 @@ ACONTROLP imgbtn_reinit(
   byte isflat,
   byte touchmsg
 );
+
+void imgbtn_ondraw(void * x);
 
 ACONTROLP accheck(
   AWINDOWP win,
@@ -989,6 +998,7 @@ void acprog_setonwait(ACONTROLP ctl, byte onwait);
 
 ACONTROLP aconsole(AWINDOWP win, int x, int y, int w, int h);
 void aconsole_add(void * x, int c);
+void aconsole_ondraw(void * x);
 void aconsole_setwindowsize(void * x, int fd);
 byte aconsole_isclrf(ACONTROLP ctl);
 int aconsole_isescape(ACONTROLP ctl);

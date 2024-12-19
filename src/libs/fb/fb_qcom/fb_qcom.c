@@ -374,10 +374,10 @@ byte QCOMFB_allocate_overlays(LIBAROMA_FBP me){
 byte QCOMFB_sync(
     LIBAROMA_FBP me,
     wordp src,
-    int x,
-    int y,
-    int w,
-    int h) {
+    __unused int x,
+    __unused int y,
+    __unused int w,
+    __unused int h) {
   if (me == NULL) {
     return 0;
   }
@@ -429,7 +429,7 @@ void QCOMFB_swap_buffer(LIBAROMA_FBP me){
       mi->qcom->yoffset=0;
     }
     mi->current_buffer =
-      mi->buffer + (mi->qcom->yoffset * mi->line * mi->pixsz);
+      (char *)mi->buffer + (mi->qcom->yoffset * mi->line * mi->pixsz);
   }
   else{
     mi->qcom->yoffset=0;

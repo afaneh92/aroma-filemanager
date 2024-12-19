@@ -20,6 +20,7 @@
  * AROMA File Manager MAIN UI
  *
  */
+#include <aroma.h>
 
 //*
 //* DEFINE FUNCTIONS
@@ -182,7 +183,7 @@ byte aui_tbstate(AUI_VARSP v, byte state, byte cstate) {
 //*
 byte aui_show(char ** path, byte * state, char * selfile, byte back_ani) {
   //-- REDRAW BG
-  aui_setbg(NULL);
+  aui_setbg();
   //-- Main Variable
   AUI_VARS v;
   //-- Return Value

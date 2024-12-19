@@ -25,7 +25,7 @@
 // #include <sys/statvfs.h>
 #include <dirent.h>
 #include <sys/stat.h>
-#include "../aroma.h"
+#include <aroma.h>
 
 int max(int a, int b) {
   return (a > b) ? a : b;
@@ -435,7 +435,7 @@ byte akinetic_uphandler(AKINETIC * p, int mouseY) {
 int akinetic_fling(AKINETIC * p) {
   p->velocity = p->velocity * AKINETIC_DAMPERING;
   
-  if (abs(p->velocity) < 0.1) {
+  if (fabs(p->velocity) < 0.1) {
     return 0;
   }
   
@@ -444,7 +444,7 @@ int akinetic_fling(AKINETIC * p) {
 int akinetic_fling_dampered(AKINETIC * p, float dampersz) {
   p->velocity = p->velocity * dampersz;
   
-  if (abs(p->velocity) < 0.1) {
+  if (fabs(p->velocity) < 0.1) {
     return 0;
   }
   

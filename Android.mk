@@ -22,7 +22,6 @@ LOCAL_SRC_FILES += \
 
 # AROMA CONTROLS SOURCE FILES
 LOCAL_SRC_FILES += \
-    src/aroma_openpty.c \
     src/controls/aroma_controls.c \
     src/controls/aroma_control_button.c \
     src/controls/aroma_control_check.c \
@@ -66,7 +65,9 @@ LOCAL_FORCE_STATIC_EXECUTABLE := true
 # INCLUDES
 LOCAL_C_INCLUDES := \
     $(AROMA_FILEMANAGER_LOCALPATH)/libs/minutf8 \
+    $(AROMA_FILEMANAGER_LOCALPATH)/src \
     external/freetype/include \
+    external/selinux/libselinux/include \
     external/png \
     bootable/recovery
 
@@ -91,15 +92,13 @@ LOCAL_CFLAGS += -DAROMA_BUILD_CN="\"$(AROMA_CN)\""
 LOCAL_STATIC_LIBRARIES := libpng libminzip libft2_aroma_fm_static libm libc libz
   
 # Remove Old Build
-ifeq ($(MAKECMDGOALS),$(LOCAL_MODULE))
-    $(shell rm -rf $(PRODUCT_OUT)/obj/EXECUTABLES/$(LOCAL_MODULE)_intermediates)
-    $(shell rm -rf $(PRODUCT_OUT)/aroma-fm.zip)
-endif
+$(shell rm -rf $(PRODUCT_OUT)/obj/EXECUTABLES/$(LOCAL_MODULE)_intermediates)
+$(shell rm -rf $(PRODUCT_OUT)/aroma-fm.zip)
 
 include $(BUILD_EXECUTABLE)
 
 # freetype
-include $(AROMA_INSTALLER_LOCALPATH)/libs/freetype/Android.mk
+include $(AROMA_FILEMANAGER_LOCALPATH)/libs/freetype/Android.mk
 
 include $(CLEAR_VARS)
 

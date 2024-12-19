@@ -24,7 +24,7 @@
 #ifndef _AROMA_NODEBUG
 #include <mcheck.h>
 #endif
-#include "../aroma.h"
+#include <aroma.h>
 
 //*
 //* GLOBAL UI VARIABLES

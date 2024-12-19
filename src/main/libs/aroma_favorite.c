@@ -20,6 +20,8 @@
  * AROMA File Manager Favorite UI
  *
  */
+#include <aroma.h>
+
 byte auifav_isfav(const char * path_src) {
   const char * path = path_src;
   char * o = aarray_get(aui_cfg_array, "favorites");
@@ -173,7 +175,7 @@ char * auifav_getpath(dword id) {
   char * tok = strtok(buf, ";");
   
   while (tok) {
-    if (n++ == id) {
+    if (n++ == (int)id) {
       ret = strdup(tok);
       break;
     }
@@ -186,20 +188,8 @@ char * auifav_getpath(dword id) {
 }
 
 byte
-auifav_win(CANVAS * bg, char * path, char ** out_char, int titY, int titH,
-           int boxY, int boxH, byte first) {
-  int btnS = agdp() * 20;
-  int btnP = agdp() * 2;
+auifav_win(CANVAS * bg, char ** out_char, int titY, int boxY, int boxH, byte first) {
   AWINDOWP hWin = aw(bg);
-  ACONTROLP title =
-    aclabel(hWin, btnS + btnP, titY, agw() - ((btnS + btnP) * 2), titH,
-            alang_get("tools.favorite"), 1, 1, 2, acfg()->winfg);
-  ACONTROLP addthis =
-    imgbtn(hWin, btnP, titY + btnP, btnS, btnS, aui_icons(6), NULL, 1,
-           55);
-  ACONTROLP cancel =
-    imgbtn(hWin, agw() - (btnS + btnP), titY + btnP, btnS, btnS,
-           aui_icons(0), NULL, 1, 5);
   ACONTROLP hFile = afbox(hWin, 0, boxY, agw(), boxH, 7, 8, 2, 6);
   auifav_fetch(hFile);
   aw_show_ex(hWin, first ? 1 : 100, titY, hFile);
@@ -273,7 +263,7 @@ auifav_win(CANVAS * bg, char * path, char ** out_char, int titY, int titH,
   return reshow;
 }
 
-char * auifav(AWINDOWP parent, char * path) {
+char * auifav(AWINDOWP parent) {
   //-- Mute Parent
   CANVAS * tmpc = aw_muteparent(parent);
   aw_set_on_dialog(2);
@@ -298,8 +288,7 @@ char * auifav(AWINDOWP parent, char * path) {
   byte first = 1;
   char * out_char = NULL;
   
-  while (auifav_win
-         (&favbg, path, &out_char, winY, titH, boxY, boxH, first)) {
+  while (auifav_win(&favbg, &out_char, winY, boxY, boxH, first)) {
     first = 0;
   }
   

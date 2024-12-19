@@ -105,7 +105,7 @@ byte auia_hold_perm(AUI_VARSP v, char * fname) {
   byte ret = 1;
   char * path_filename = NULL;
   aui_setpath(&path_filename, v->path, fname, 0);
-  ret = auido_setperm(v->hWin, path_filename, fname);
+  ret = auido_setperm(v->hWin, path_filename);
   free(path_filename);
   
   if (!ret) {
@@ -630,7 +630,7 @@ byte aui_dispatch(AUI_VARSP v) {
       break;
       
     case 21: {
-        char * out = auifav(v->hWin, v->path);
+        char * out = auifav(v->hWin);
         
         if (out != NULL) {
           aui_setpath(&v->path, out, "", 0);

@@ -20,7 +20,7 @@
  * AROMA UI: Progress Bar
  *
  */
-#include "../aroma.h"
+#include <aroma.h>
 
 /***************************[ BUTTON ]**************************/
 typedef struct {
@@ -35,7 +35,7 @@ typedef struct {
   byte      wait_thread;
 } APROGD, * APROGDP;
 
-dword acprog_oninput(void * x, int action, ATEV * atev) {
+dword acprog_oninput() {
   return 0;
 }
 void acprog_ondraw(void * x) {
@@ -131,7 +131,7 @@ void acprog_ondestroy(void * x) {
   ag_ccanvas(&d->bg);
   free(ctl->d);
 }
-void acprog_onblur(void * x) {
+void acprog_onblur() {
 }
 float acprog_getvalue(ACONTROLP ctl) {
   APROGDP  d = (APROGDP) ctl->d;

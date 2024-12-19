@@ -224,7 +224,6 @@ byte aui_cfg_parse(AARRAYP * arr, char * bufs) {
   }
   
   byte state = 0;
-  byte slash = 0;
   char c = 0;
   char pc = 0;
   char * key = NULL;
