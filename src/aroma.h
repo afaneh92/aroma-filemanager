@@ -1042,7 +1042,6 @@ int aconsole_isescape(ACONTROLP ctl);
 #define STRINGIFY(x) #x
 #define EXPAND(x) STRINGIFY(x)
 
-#include "libs/fb/engine.h"
-#include "libs/fb/fb.h"
+#include "libs/fb/aroma_engine.h"
 
 #endif // __AROMA_H__
