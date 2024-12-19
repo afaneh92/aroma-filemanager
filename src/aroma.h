@@ -50,14 +50,8 @@
 
 #include <sys/ioctl.h>
 
-//
-// ARM NEON - Testing Only
-//
-#ifdef __ARM_NEON__
-#include <arm_neon.h>
-#endif
-
 #include "aroma_mem.h"
+#include "aroma_engine.h"
 
 // Defined in build command
 // #define _AROMA_NODEBUG
@@ -71,29 +65,10 @@
 //
 // Common Data Type
 //
-/*
-#define byte              unsigned char
-#define dword             unsigned int
-#define word              unsigned short
-#define color             unsigned short
-*/
-
-/* primitive unsigneds */
 typedef uint8_t byte;
 typedef uint16_t word;
 typedef uint16_t color;
 typedef uint32_t dword;
-
-/* primitive pointers */
-typedef color * colorp;
-typedef byte * bytep;
-typedef word * wordp;
-typedef dword * dwordp;
-typedef void * voidp;
-
-/* unicode char */
-typedef uint32_t uchar;
-typedef uchar * ucharp;
 
 //
 // AROMA Main Configurations
@@ -102,11 +77,11 @@ typedef uchar * ucharp;
 #define AROMA_BUILD_A     "<support@amarullz.com>"
 #define AROMA_BUILD_URL   "http://www.amarullz.com/"
 #define AROMA_COPY        "(c) 2013-2015 by amarullz.com"
+#define AROMA_COPY2       "(c) 2024 by afaneh92"
 
 //-- Main Definitions
 #define AROMA_TMP                 "/tmp/aroma-fm"
 #define AROMA_DIR                 "assets"
-#define AROMA_FRAMEBUFFER         "/dev/graphics/fb0"
 #define AROMA_THEME_CNT           24
 #define MAX_FILE_GETPROP_SIZE     65536
 
@@ -1004,47 +979,24 @@ void aconsole_setwindowsize(void * x, int fd);
 byte aconsole_isclrf(ACONTROLP ctl);
 int aconsole_isescape(ACONTROLP ctl);
 
-//**********[ AROMA LOGGING ]**********//
-#define _AROMA_DEBUG_TAG "aroma"
-#ifndef _AROMA_NODEBUG
-#define LOGS(...) fprintf(stdout, _AROMA_DEBUG_TAG "/s: " __VA_ARGS__)
-#define LOGE(...) fprintf(stdout, _AROMA_DEBUG_TAG "/e: " __VA_ARGS__)
-#define LOGW(...) fprintf(stdout, _AROMA_DEBUG_TAG "/w: " __VA_ARGS__)
-#define LOGI(...) fprintf(stdout, _AROMA_DEBUG_TAG "/i: " __VA_ARGS__)
-#define LOGV(...) fprintf(stdout, _AROMA_DEBUG_TAG "/v: " __VA_ARGS__)
-#define LOGD(...) fprintf(stdout, _AROMA_DEBUG_TAG "/d: " __VA_ARGS__)
-#else
-#define LOGS(...) fprintf(stdout, _AROMA_DEBUG_TAG "/s: " __VA_ARGS__)
-#define LOGE(...) fprintf(stdout, _AROMA_DEBUG_TAG "/e: " __VA_ARGS__)
-#define LOGW(...) /**/
-#define LOGI(...) /**/
-#define LOGV(...) /**/
-#define LOGD(...) /**/
-#endif
-#define ALOGT(...)
-#define ALOGRT(...)
-
 //**********[ AROMA LOGGING - LIBAROMA STYLE ]**********//
-#define ALOGE(...) \
-  fprintf(stdout, _AROMA_DEBUG_TAG "[E] " __VA_ARGS__); \
-  fprintf(stdout, "\n");
-#define ALOGI(...) \
-  fprintf(stdout, _AROMA_DEBUG_TAG "[I] " __VA_ARGS__); \
-  fprintf(stdout, "\n");
-#define ALOGS(...) \
-  fprintf(stdout, _AROMA_DEBUG_TAG "[S] " __VA_ARGS__); \
-  fprintf(stdout, "\n");
-#define ALOGW(...) \
-  fprintf(stdout, _AROMA_DEBUG_TAG "[W] " __VA_ARGS__); \
-  fprintf(stdout, "\n");
-#define ALOGV(...) \
-  fprintf(stdout, _AROMA_DEBUG_TAG "[V] " __VA_ARGS__); \
-  fprintf(stdout, "\n");
+#define _AROMA_DEBUG_TAG "aroma"
+#define LOGS(...) fprintf(stdout, _AROMA_DEBUG_TAG "[S] " __VA_ARGS__); fprintf(stdout, "\n");
+#define LOGE(...) fprintf(stdout, _AROMA_DEBUG_TAG "[E] " __VA_ARGS__); fprintf(stdout, "\n");
+#define LOGI(...) fprintf(stdout, _AROMA_DEBUG_TAG "[I] " __VA_ARGS__); fprintf(stdout, "\n");
+#ifdef _AROMA_VERBOSE_INFO
+#define LOGW(...) fprintf(stdout, _AROMA_DEBUG_TAG "[W] " __VA_ARGS__); fprintf(stdout, "\n");
+#define LOGV(...) fprintf(stdout, _AROMA_DEBUG_TAG "[V] " __VA_ARGS__); fprintf(stdout, "\n");
+#define LOGD(...) fprintf(stdout, _AROMA_DEBUG_TAG "[D] " __VA_ARGS__); fprintf(stdout, "\n");
+#else
+#define LOGW(...)
+#define LOGV(...)
+#define LOGD(...)
+#endif
+#define LOGT(...)
+#define LOGRT(...)
 
 #define STRINGIFY(x) #x
 #define EXPAND(x) STRINGIFY(x)
-
-#include "libs/fb/engine.h"
-#include "libs/fb/fb.h"
 
 #endif // __AROMA_H__

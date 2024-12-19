@@ -27,9 +27,9 @@
 #include <sys/mman.h>
 #include <pthread.h>
 #include <aroma.h>
+#include "aroma_fb.h"
 
 static int colorspace_positions[4] = {0, 0, 0, 0};
-#include "fb/fb.c"
 
 /*****************************[ GLOBAL VARIABLES ]*****************************/
 static dword                           ag_fbsz = 0;
@@ -50,15 +50,15 @@ static byte                            agclp;
 static byte                            ag_font_onload = 0;
 static byte                            ag_oncopybusy = 0;
 static int                             ag_caret[4] = {0, 0, 0, 0}; //-- Caret, x,y,h,status
-static int ag_line_length=0;
+static int                             ag_line_length = 0;
+
 /*
  RG B0 RG B0
  B0 RG B0 RG
-
-
  R0 GB R0
  GB R0 GB
 */
+
 static const byte dither_tresshold_r[64] = {
   1, 7, 3, 5, 0, 8, 2, 6,
   7, 1, 5, 3, 8, 0, 6, 2,
@@ -69,6 +69,7 @@ static const byte dither_tresshold_r[64] = {
   2, 6, 1, 7, 3, 5, 0, 8,
   6, 2, 7, 1, 5, 3, 8, 0
 };
+
 static const byte dither_tresshold_g[64] = {
   1, 3, 2, 2, 3, 1, 2, 2,
   2, 2, 0, 4, 2, 2, 4, 0,
@@ -79,6 +80,7 @@ static const byte dither_tresshold_g[64] = {
   3, 1, 2, 2, 1, 3, 2, 2,
   2, 2, 4, 0, 2, 2, 0, 4
 };
+
 static const byte dither_tresshold_b[64] = {
   5, 3, 8, 0, 6, 2, 7, 1,
   3, 5, 0, 8, 2, 6, 1, 7,
@@ -89,12 +91,15 @@ static const byte dither_tresshold_b[64] = {
   7, 1, 5, 3, 8, 0, 6, 2,
   1, 7, 3, 5, 0, 8, 2, 6
 };
+
 int * ag_getcolorspace() {
   return colorspace_positions;
 }
+
 void ag_changecolorspace(int r, int g, int b, __unused int a) {
-  LINUXFBDR_setrgbpos(libaroma_fb(),r,g,b);
+  libaroma_fb_changecolorspace(libaroma_fb(), r, g, b);
 }
+
 color ag_dodither_rgb(int x, int y, byte sr, byte sg, byte sb) {
   byte dither_xy = ((y & 7) << 3) + (x & 7);
   byte r = ag_close_r(min(sr + dither_tresshold_r[dither_xy], 0xff));
@@ -102,10 +107,10 @@ color ag_dodither_rgb(int x, int y, byte sr, byte sg, byte sb) {
   byte b = ag_close_b(min(sb + dither_tresshold_b[dither_xy], 0xff));
   return ag_rgb(r, g, b);
 }
+
 color ag_dodither(int x, int y, dword col) {
   return ag_dodither_rgb(x, y, ag_r32(col), ag_g32(col), ag_b32(col));
 }
-
 
 /****************************[ DECLARED FUNCTIONS ]*****************************/
 static void * ag_thread(__unused void * cookie);
@@ -117,11 +122,13 @@ dword ag_calchighlight(color c1, color c2) {
   color vc2 = ag_calculatealpha(ag_calculatealpha(c1, c2, 110), 0xffff, 20);
   return MAKEDWORD(vc1, vc2);
 }
+
 dword ag_calcpushlight(color c1, color c2) {
   color vc1 = ag_calculatealpha(c1, 0xffff, 20);
   color vc2 = ag_calculatealpha(ag_calculatealpha(c1, c2, 100), 0xffff, 10);
   return MAKEDWORD(vc1, vc2);
 }
+
 color ag_calpushad(color c_g) {
   byte sg_r = ag_r(c_g);
   byte sg_g = ag_g(c_g);
@@ -131,6 +138,7 @@ color ag_calpushad(color c_g) {
   sg_b = floor(sg_b * 0.6);
   return ag_rgb(sg_r, sg_g, sg_b);
 }
+
 color ag_calculatecontrast(color c, float intensity) {
   return ag_rgb(
            (byte) min(ag_r(c) * intensity, 255),
@@ -138,6 +146,7 @@ color ag_calculatecontrast(color c, float intensity) {
            (byte) min(ag_b(c) * intensity, 255)
          );
 }
+
 dword ag_calculatealpha32(dword dcl, dword scl, byte l) {
   if (scl == dcl) {
     return scl;
@@ -155,6 +164,7 @@ dword ag_calculatealpha32(dword dcl, dword scl, byte l) {
   byte b = (byte) (((((int) ag_b32(dcl)) * ralpha) + (((int) ag_b32(scl)) * l)) >> 8);
   return ag_rgb32(r, g, b);
 }
+
 dword ag_calculatealpha16to32(color dcl, dword scl, byte l) {
   if (scl == ag_rgbto32(dcl)) {
     return scl;
@@ -180,15 +190,15 @@ byte ag_init() {
     return 0;
   }
   
-  ag_canvas(&ag_c, libaromafb()->w, libaromafb()->h);
-  ag_dp = floor( min(libaromafb()->w, libaromafb()->h) / 160);
+  ag_canvas(&ag_c, libaroma_fb()->w, libaroma_fb()->h);
+  ag_dp = floor( min(libaroma_fb()->w, libaroma_fb()->h) / 160);
   agclp = 2;
-  ag_fbsz = libaromafb()->sz*2;
-  ag_fbuf = libaromafb()->canvas;
+  ag_fbsz = libaroma_fb()->sz*2;
+  ag_fbuf = libaroma_fb()->canvas;
   ag_b    = (word *) malloc(ag_fbsz);
   ag_bz   = (word *) malloc(ag_fbsz);
-  ag_16w  = libaromafb()->w / 2;
-  ag_line_length = libaromafb()->w*2;
+  ag_16w  = libaroma_fb()->w / 2;
+  ag_line_length = libaroma_fb()->w*2;
   memcpy(ag_b, ag_fbuf, ag_fbsz);
   memcpy(ag_c.data, ag_fbuf, ag_fbsz);
     
@@ -200,6 +210,7 @@ byte ag_init() {
   aft_open();
   return 1;
 }
+
 byte ag_close_thread() {
   ag_isrun = 0;
   if (pthread_join(ag_pthread, NULL) == 0){
@@ -209,6 +220,7 @@ byte ag_close_thread() {
      return 0;
   }
 }
+
 color aAlphaB(color scl, byte l) {
   if (l == 0) {
     return 0;
@@ -226,6 +238,7 @@ color aAlphaB(color scl, byte l) {
       ((ag_b(scl) * na) >> 11)
     );
 }
+
 byte ag_draw_strecth(CANVAS * d,
                      CANVAS * s,
                      int dx,
@@ -277,9 +290,9 @@ byte ag_draw_strecth(CANVAS * d,
       rat += x_ratio;
     }
   }
-  
   return 1;
 }
+
 byte ag_draw_strecth_ex(
   CANVAS * d,
   CANVAS * s,
@@ -345,7 +358,6 @@ byte ag_draw_strecth_ex(
       }
     }
   }
-  
   return 1;
 }
 
@@ -379,9 +391,6 @@ byte ag_draw_opa(
   sh = (dy + sh > d->h) ? d->h - dy : sh;
   int y;
 
-#ifdef LIBAROMA_CONFIG_OPENMP
-  #pragma omp parallel for
-#endif
   for (y = 0; y < sh; y++) {
     word * t = d->data + (y + sy) * d->w + sx;
     word * p = s->data + (y + dy) * s->w + dx;
@@ -530,12 +539,9 @@ void ag_busyprogress() {
     alp=(255-90)+ag_busypos;
   }
   int y;
-#ifdef LIBAROMA_CONFIG_OPENMP
-  #pragma omp parallel for
-#endif
-  for (y=0;y<libaromafb()->h;y++){
-    int p=y*libaromafb()->w;
-    libaroma_alpha_const_line(y, libaromafb()->w,ag_fbuf+p,ag_b+p,ag_bz+p,alp);
+  for (y=0;y<libaroma_fb()->h;y++){
+    int p=y*libaroma_fb()->w;
+    libaroma_alpha_const_line(y, libaroma_fb()->w,ag_fbuf+p,ag_b+p,ag_bz+p,alp);
   }
   if (!ag_isbusy) {
     ag_sync();
@@ -606,22 +612,22 @@ void ag_refreshrate() {
   if (ag_isbusy == 0) {
     memcpy(ag_fbuf, ag_b, ag_fbsz);
     ag_drawcaret();
-    libaroma_sync();
+    libaroma_fb_sync();
   }
   else if (ag_isbusy == 2) {
     memcpy(ag_fbuf, ag_bz, ag_fbsz);
     ag_busyprogress();
-    libaroma_sync();
+    libaroma_fb_sync();
   }
   else if (ag_lastbusy < alib_tick() - 50) {
     ag_copybusy("Please Wait...");
     ag_isbusy = 2;
     memcpy(ag_fbuf, ag_bz, ag_fbsz);
-    libaroma_sync();
+    libaroma_fb_sync();
   }
   else if (ag_have_sync){
     ag_have_sync=0;
-    libaroma_sync();
+    libaroma_fb_sync();
   }
 }
 
@@ -655,7 +661,7 @@ static void * ag_sync_fade_thread(void * cookie) {
   
   for (i = 0; (i < (frame / 2)) && ag_sync_locked; i++) {
     byte perc = (255 / frame) * i;
-    libaroma_alpha_const(libaromafb()->sz,
+    libaroma_alpha_const(libaroma_fb()->sz,
       ag_b, ag_b, ag_c.data, perc);
     ag_have_sync = 1;
     ag_refreshrate();
@@ -666,16 +672,17 @@ static void * ag_sync_fade_thread(void * cookie) {
   ag_sync();
   return NULL;
 }
+
 void ag_sync_fade_wait(int frame) {
   ag_sync_fade_thread((void *)(uintptr_t) frame);
-  //ag_sync();
 }
+
 void ag_sync_fade(int frame) {
   pthread_t threadsyncfade;
   pthread_create(&threadsyncfade, NULL, ag_sync_fade_thread, (void *)(uintptr_t) frame);
   pthread_detach(threadsyncfade);
-  // ag_sync();
 }
+
 byte ag_blur_h(CANVAS * d, CANVAS * s, int radius) {
   if (radius < 1) {
     return 0;
@@ -876,12 +883,12 @@ void ag_blank(CANVAS * c) {
 
 //-- Width
 int agw() {
-  return libaromafb()->w;
+  return libaroma_fb()->w;
 }
 
 //-- Height
 int agh() {
-  return libaromafb()->h;
+  return libaroma_fb()->h;
 }
 
 int agdp() {
@@ -963,10 +970,7 @@ byte ag_draw_ex(CANVAS * dc, CANVAS * sc, int dx, int dy, int sx, int sy, int sw
   int copy_sz  = sr_w * 2;
   byte * src   = ((byte *) sc->data);
   byte * dst   = ((byte *) dc->data);
-  
-#ifdef LIBAROMA_CONFIG_OPENMP
-  #pragma omp parallel for
-#endif
+
   for (y = 0; y < sr_h; y++) {
     memcpy(
       dst + ((ds_y + y)*pos_dc_w) + pos_ds_x,
@@ -1128,9 +1132,6 @@ byte ag_rect(CANVAS * _b, int x, int y, int w, int h, color cl) {
   h = y2 - y;
   //-- LOOPS
   int yy;
-#ifdef LIBAROMA_CONFIG_OPENMP
-  #pragma omp parallel for
-#endif
   for (yy = y; yy < y2; yy++) {
     int i = yy * _b->w + x;
     libaroma_color_set(_b->data+i, cl, x2-x);
@@ -1175,9 +1176,6 @@ byte ag_rectopa(CANVAS * _b, int x, int y, int w, int h, color cl, byte l) {
   */
   //-- LOOPS
   int yy;
-#ifdef LIBAROMA_CONFIG_OPENMP
-  #pragma omp parallel for
-#endif
   for (yy = y; yy < y2; yy++) {
     int i = yy * _b->w + x;
     libaroma_alpha_rgba_fill(x2-x,_b->data+i,_b->data+i,cl,l);
@@ -2658,7 +2656,5 @@ void ag_takescreenshoot() {
     fclose(fp);
     LOGS("Save on \"%s\" %i Bytes\n", filename, bmph.filesize);
   }
-  
 #pragma pack(pop)
 }
-

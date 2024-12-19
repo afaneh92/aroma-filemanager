@@ -4,12 +4,6 @@ include $(CLEAR_VARS)
 # LOCAL PATH COPY
 AROMA_FILEMANAGER_LOCALPATH := $(LOCAL_PATH)
 
-# Check for ARM NEON
-AROMA_ARM_NEON := false
-ifeq ($(ARCH_ARM_HAVE_NEON),true)
-    AROMA_ARM_NEON := true
-endif
-
 # VERSIONING
 AROMA_NAME := AROMA Filemanager
 AROMA_VERSION := 1.92
@@ -51,6 +45,14 @@ LOCAL_SRC_FILES += \
     src/libs/aroma_png.c \
     src/libs/aroma_zip.c
 
+# AROMA FRAMEBUFFER SOURCE FILES
+LOCAL_SRC_FILES += \
+    src/libs/fb/aroma_fb.c \
+    src/libs/fb/aroma_fbdev.c \
+    src/libs/fb/aroma_drm.c \
+    src/libs/fb/aroma_engine.c \
+    src/libs/fb/aroma_overlay.c
+
 # AROMA FILEMANAGER SOURCE FILES
 LOCAL_SRC_FILES += \
     src/main/aroma.c \
@@ -66,10 +68,20 @@ LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_C_INCLUDES := \
     $(AROMA_FILEMANAGER_LOCALPATH)/libs/minutf8 \
     $(AROMA_FILEMANAGER_LOCALPATH)/src \
+    $(AROMA_FILEMANAGER_LOCALPATH)/src/libs/fb \
     external/freetype/include \
     external/selinux/libselinux/include \
     external/png \
+    external/libdrm \
+    external/libdrm/include/drm \
     bootable/recovery
+
+# The header files required for qcom overlay graphics!
+ifeq ($(TARGET_CUSTOM_KERNEL_HEADERS),)
+    LOCAL_C_INCLUDES += bootable/recovery/minuitwrp/include
+else
+    LOCAL_C_INCLUDES += $(TARGET_CUSTOM_KERNEL_HEADERS)
+endif
 
 # COMPILER FLAGS
 LOCAL_CFLAGS := -O2 
@@ -78,18 +90,16 @@ LOCAL_CFLAGS += -fdata-sections -ffunction-sections
 LOCAL_CFLAGS += -Wl,--gc-sections -fPIC -DPIC
 LOCAL_CFLAGS += -D_AROMA_NODEBUG
 
-ifeq ($(AROMA_ARM_NEON),true)
-    LOCAL_CFLAGS += -mfloat-abi=softfp -mfpu=neon -D__ARM_HAVE_NEON
-endif
-
 # SET VERSION
 LOCAL_CFLAGS += -DAROMA_NAME="\"$(AROMA_NAME)\""
 LOCAL_CFLAGS += -DAROMA_VERSION="\"$(AROMA_VERSION)\""
 LOCAL_CFLAGS += -DAROMA_BUILD="\"$(AROMA_BUILD)\""
 LOCAL_CFLAGS += -DAROMA_BUILD_CN="\"$(AROMA_CN)\""
 
+LOCAL_CFLAGS += -DPLATFORM_SDK_VERSION=$(PLATFORM_SDK_VERSION)
+
 # INCLUDED LIBRARIES
-LOCAL_STATIC_LIBRARIES := libpng libminzip libft2_aroma_fm_static libm libc libz
+LOCAL_STATIC_LIBRARIES := libpng libminzip libft2_aroma_fm_static libm libc libz libdrm
   
 # Remove Old Build
 $(shell rm -rf $(PRODUCT_OUT)/obj/EXECUTABLES/$(LOCAL_MODULE)_intermediates)

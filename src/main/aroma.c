@@ -59,6 +59,7 @@ void a_splash(char * spipe) {
   fprintf(apipe(), "ui_print " AROMA_NAME " version " AROMA_VERSION "\n");
   fprintf(apipe(), "ui_print\n");
   fprintf(apipe(), "ui_print " AROMA_COPY "\n");
+  fprintf(apipe(), "ui_print " AROMA_COPY2 "\n");
   fprintf(apipe(), "ui_print\n");
   fprintf(apipe(), "ui_print\n");
   usleep(1000000);
@@ -125,7 +126,7 @@ int main(int argc, char ** argv) {
     LOGE("Wrong Updater Binary API!!! Expected 1, 2, or 3, But got %s\n", argv[1]);
     return 2;
   }
-  
+
   //* Save to Argument
   LOGS("Saving Arguments\n");
   snprintf(currArgv[0], 255, "%s", argv[1]);
