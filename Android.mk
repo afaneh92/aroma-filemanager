@@ -67,6 +67,7 @@ LOCAL_C_INCLUDES := \
     $(AROMA_FILEMANAGER_LOCALPATH)/libs/minutf8 \
     $(AROMA_FILEMANAGER_LOCALPATH)/src \
     external/freetype/include \
+    external/selinux/libselinux/include \
     external/png \
     bootable/recovery
 
@@ -91,10 +92,8 @@ LOCAL_CFLAGS += -DAROMA_BUILD_CN="\"$(AROMA_CN)\""
 LOCAL_STATIC_LIBRARIES := libpng libminzip libft2_aroma_fm_static libm libc libz
   
 # Remove Old Build
-ifeq ($(MAKECMDGOALS),$(LOCAL_MODULE))
-    $(shell rm -rf $(PRODUCT_OUT)/obj/EXECUTABLES/$(LOCAL_MODULE)_intermediates)
-    $(shell rm -rf $(PRODUCT_OUT)/aroma-fm.zip)
-endif
+$(shell rm -rf $(PRODUCT_OUT)/obj/EXECUTABLES/$(LOCAL_MODULE)_intermediates)
+$(shell rm -rf $(PRODUCT_OUT)/aroma-fm.zip)
 
 include $(BUILD_EXECUTABLE)
 

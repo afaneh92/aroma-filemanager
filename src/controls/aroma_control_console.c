@@ -145,7 +145,7 @@ void csireset(ACONTROLP ctl) {
 }
 void tclearregion(ACONTROLP ctl, int x1, int y1, int x2, int y2) {
   ACONSOLEP   d  = (ACONSOLEP) ctl->d;
-  int x, y, temp;
+  int temp;
   
   if (x1 > x2) {
     temp = x1, x1 = x2, x2 = temp;
@@ -640,7 +640,7 @@ void aconsole_setwindowsize(void * x, int fd) {
     //printf("\n\n::: CANNOT RESIZE WINDOW :::\n\n");
   }
 }
-dword aconsole_oninput(void * x, int action, ATEV * atev) {
+dword aconsole_oninput(__unused void * x, __unused int action, __unused ATEV * atev) {
   return 0;
 }
 void aconsole_ondraw(void * x) {
@@ -710,9 +710,9 @@ void aconsole_ondestroy(void * x) {
   ag_ccanvas(&d->cv);
   free(ctl->d);
 }
-void aconsole_onblur(void * x) {
+void aconsole_onblur(__unused void * x) {
 }
-byte aconsole_onfocus(void * x) {
+byte aconsole_onfocus(__unused void * x) {
   return 1;
 }
 void aconsole_escape_handler(ACONTROLP  ctl, char ascii) {
@@ -835,10 +835,7 @@ void aconsole_add(void * x, int c) {
     d->beep = 0;
     redrawit = 1;
   }
-  
-  /* Normal Char Handler */
-  int  chr     = 0;
-  
+
   switch (c) {
     case '\t':
       tputtab(ctl);

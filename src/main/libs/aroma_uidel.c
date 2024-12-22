@@ -81,8 +81,7 @@ void auido_show_del(byte * copy_status, char ** source_path, int number_files) {
       padT = winv.t;
     }
   }
-  
-  int hpad = agdp() * 2;
+
   int winW = agw() - (pad * 2);	//-- Window
   int winX = pad;
   int cliW = winW - (padL + padR);	//-- Window Client
@@ -97,11 +96,6 @@ void auido_show_del(byte * copy_status, char ** source_path, int number_files) {
   int winY = (agh() / 2) - (winH / 2);
   int titY = winY + padT;
   int curY = titY + titH + pad;
-  int defW = cliW - pad;
-  int txtW1 = (int)(defW * 0.8);
-  int txtW2 = defW - txtW1;
-  int txtX1 = cliX + hpad;
-  int txtX2 = txtX1 + txtW1;
   
   //-- Draw Canvas
   if (!atheme_draw("img.dialog", &bg, winX, winY, winW, winH)) {
@@ -142,7 +136,6 @@ void auido_show_del(byte * copy_status, char ** source_path, int number_files) {
   memset(&dt, 0, sizeof(AFSDT));
   int curr_id = 0;
   byte proc_state = 0;
-  long kbps_tick = 0;
   
   if (auido_next_del_size
       (&dt, &curr_id, copy_status, source_path, number_files)) {
@@ -224,7 +217,7 @@ void auido_show_del(byte * copy_status, char ** source_path, int number_files) {
   aw_unmaskparent(NULL, tmpc, maskc, winX - 1, winY - 1, winW + 2, winH + 2);
 }
 
-void auido_del(char * dest, byte * tool_state) {
+void auido_del(__unused char * dest, byte * tool_state) {
   ag_setbusy();
   
   if (auic_s > 0) {

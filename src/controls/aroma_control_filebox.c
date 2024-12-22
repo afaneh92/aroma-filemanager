@@ -480,7 +480,6 @@ byte afbox_add(ACONTROLP ctl, char * title, char * desc, byte checked, PNGCANVAS
   snprintf(newip->title, 256, "%s", title);
   snprintf(newip->desc, 256, "%s", desc);
   newip->img      = img;
-  int imgS        = agdp() * 24;
   newip->drawed   = 0;
   newip->th       = ag_txtheight(d->clientTextW, newip->title, 1);
   newip->dh       = ag_fontheight(0); // ag_txtheight(d->clientTextW,newip->desc,0);
@@ -652,7 +651,7 @@ void afbox_ondraw(void * x) {
   int minpadding = 2;
   int agdp3 = (agdp() * minpadding);
   int agdp6 = (agdp() * (minpadding * 2));
-  int agdpX = agdp6;
+  //int agdpX = agdp6;
   //-- Realtime redraw
   int dr_top = d->scrollY;
   int dr_bottom = dr_top + ctl->h;
@@ -678,11 +677,11 @@ void afbox_ondraw(void * x) {
   
   if (d->maxScrollY > 0) {
     //-- Glow
-    // int i;
+    /* int i;
     byte isST = (d->scrollY > 0) ? 1 : 0;
     byte isSB = (d->scrollY < d->maxScrollY) ? 1 : 0;
     int add_t_y = 1;
-    /*
+
     for (i = 0; i < agdpX; i++) {
       byte alph = 80 - round((((float) (i + 1)) / ((float) agdpX)) * 80);
       ag_rectopa(pc, ctl->x, ctl->y + i + add_t_y, ctl->w, 1, 

@@ -542,7 +542,6 @@ void aw_show_ex2(AWINDOWP win, byte anitype, int x, int pos, int w, int h, ACONT
       CANVAS cbg;
       ag_canvas(&cbg, agw(), agh());
       ag_draw(&cbg, agc(), 0, 0);
-      int xc = w / 2;
       int yc = h / 2;
       int i;
       CANVAS * tmpb = (CANVAS *) malloc(sizeof(CANVAS) * fadesz);
@@ -584,7 +583,6 @@ void aw_show_ex2(AWINDOWP win, byte anitype, int x, int pos, int w, int h, ACONT
       CANVAS cbg;
       ag_canvas(&cbg, agw(), agh());
       ag_draw(&cbg, agc(), 0, 0);
-      int xc = w / 2;
       int yc = h / 2;
       int i;
       CANVAS * tmpb = (CANVAS *) malloc(sizeof(CANVAS) * fadesz);
@@ -1029,10 +1027,7 @@ void aw_textdialog(AWINDOWP parent, char * titlev, char * text, char * ok_text) 
       vpadB = winv.b;
     }
   }
-  
-  byte imgE = 0;
-  int imgW = 0;
-  int imgH = 0;
+
   int txtH    = agh() / 2;
   int infH    = txtH;
   //-- Calculate Window Size & Position
@@ -1381,8 +1376,8 @@ byte aw_confirm(AWINDOWP parent, char * titlev, char * textv, PNGCANVASP ap, cha
   aw_unmaskparent(parent, tmpc, maskc, winX - 1, winY - 1, winW + 2, winH + 2);
   return res;
 }
-byte aw_calibdraw(CANVAS * c,
-                  int id, int * xpos, int * ypos, int * xtch, int * ytch) {
+byte aw_calibdraw(__unused CANVAS * c,
+                  __unused int id, __unused int * xpos, __unused int * ypos, __unused int * xtch, __unused int * ytch) {
   return 0;
 }
 
@@ -1619,16 +1614,11 @@ char * aw_ime(AWINDOWP parent, char * current_txt, char * title) {
   ag_rectopa(agc(), 0, 0, agw(), agh(), 0x0000, 180);
   ag_sync();
   //-- Calculate Sizes
-  int vpad  = 1;
-  int mpad  = 2;
   int pad   = agdp() * 2;
-  int imeW  = agw();
   int keyH  = agdp() * 26;
-  int keyW  = floor(agw() / 10);
   int imeH  = keyH * 4;
   int wimH  = imeH + pad;
   int wimY  = agh() - wimH;
-  int keyY  = wimY + pad;
   int txtH  = agdp() * 36;
   int txtY  = wimY - txtH;
   int txtW  = agw() - ((agdp() * 48) + (pad * 3));
@@ -1655,9 +1645,6 @@ char * aw_ime(AWINDOWP parent, char * current_txt, char * title) {
   ag_text(&alertbg, titW, titX, titY + (pad * 2), title, acfg_var.controlfg, 1);
   //-- Create Window
   AWINDOWP hWin   = aw(&alertbg);
-  //-- IME Controls
-  byte onShift        = 0;
-  byte onChars        = 0;
   //-- Edit done & cancel button
   int btnv_s = agdp() * 24;
   int btnv_x = agw() - (btnv_s + pad);
@@ -1669,18 +1656,14 @@ char * aw_ime(AWINDOWP parent, char * current_txt, char * title) {
                         hWin, (agdp() * 4), txtY + (agdp() * 4), txtW - (agdp() * 8), txtH - (agdp() * 8), current_txt, 1
                       );
   //-- IME
-  ACONTROLP imebox = acime(
-                       hWin,
-                       0, wimY, agw(), wimH,
-                       editbox
-                     );
+  ACONTROLP imebox;
+  imebox = acime(hWin, 0, wimY, agw(), wimH, editbox);
   //-- Show Window
   //aw_show(hWin);
   aw_show_ex(hWin, 1, titY, editbox);
   // aw_setfocus(hWin,editbox);
   aw_draw(hWin);
   byte ondispatch = 1;
-  byte res        = 0;
   char * returntxt = NULL;
   
   //-- Dispatch Message

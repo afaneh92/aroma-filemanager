@@ -53,7 +53,7 @@ void aui_redraw() {
 //*
 //* Init Window Background With New Title
 //*
-void aui_setbg(char * titlev) {
+void aui_setbg(__unused char * titlev) {
   aui_redraw();
   ag_draw(&aui_win_bg, &aui_bg, 0, 0);
 }

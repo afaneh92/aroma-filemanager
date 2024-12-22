@@ -94,7 +94,7 @@ static void * aui_extract_thread(void * cookie){
   MemMapping map;
   if (sysMapFile(uix->zip_path, &map) != 0) {
     LOGE("failed to map file\n");
-    return -1;
+    return NULL;
   }
   if (mzOpenZipArchive(map.addr, map.length, &fzip) != 0) {
     while (!atouch_send_message(103)) {
@@ -122,7 +122,7 @@ static void * aui_extract_thread(void * cookie){
     int i;
     for (i=0;((i<uix->count)&&(uix->status>0));i++){
       const ZipEntry* ze;
-      if (i < fzip.numEntries) {
+      if (i < (int)fzip.numEntries) {
         ze = fzip.pEntries + i;
       } else {
         ze = NULL;
@@ -262,10 +262,7 @@ void auido_show_extract(char * zip_path, char * bname, char ** path) {
   int titY = winY + padT;
   int curY = titY + titH + pad;
   int defW = cliW - pad;
-  int txtW1 = (int)(defW * 0.8);
-  int txtW2 = defW - txtW1;
   int txtX1 = cliX + hpad;
-  int txtX2 = txtX1 + txtW1;
   
   AUIEXTRACT uix;
   uix.bname=bname;
@@ -314,8 +311,8 @@ void auido_show_extract(char * zip_path, char * bname, char ** path) {
   aclabel(hWin, cliX, titY, cliW, titH, alang_get("extract.extractfile"),
     1,1, 2, acfg()->winfg);
     
-  ACONTROLP mainInfo =
-    aclabel(hWin, cliX, titY+titH, cliW, titH, extract_title, 1,1, 2, acfg()->winfg);
+  ACONTROLP mainInfo;
+  mainInfo = aclabel(hWin, cliX, titY+titH, cliW, titH, extract_title, 1,1, 2, acfg()->winfg);
   
   curY += titH;
   
@@ -334,7 +331,6 @@ void auido_show_extract(char * zip_path, char * bname, char ** path) {
     aclabel(hWin, cliX, curY, cliW, txtH, 
     alang_get("extract.preparing"), 0,1, 2,acfg()->winfg);
   curY += txtH + hpad;
-  int halfW = defW / 2;
   ACONTROLP infPrc =
     aclabel(hWin, cliX, curY, cliW, txtH, extract_percent, 0, 1, 2,
             acfg()->textfg_gray);

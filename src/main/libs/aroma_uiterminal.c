@@ -211,11 +211,8 @@ void aui_show_terminal(const char * basepath, const char * arg, const char * run
   imgbtn(hWin, pad + btnW * 2, btnY, btnW, btnH, &UI_ICONS[14], "Clear",   4, 23);
   imgbtn(hWin, pad + btnW * 3, btnY, btnW, btnH, &UI_ICONS[0],  alang_get("close"), 4, 12);	//-- Close
   /* Create IME2 */
-  ACONTROLP imebox = acime2(
-                       hWin,
-                       0, conY + conH, agw(), imeH,
-                       44
-                     );
+  ACONTROLP imebox;
+  imebox = acime2(hWin, 0, conY + conH, agw(), imeH, 44);
   /* Init Shell */
   AUITERM p;
   p.active  = 0;

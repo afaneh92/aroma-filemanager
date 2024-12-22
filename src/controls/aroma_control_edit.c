@@ -161,10 +161,10 @@ void acedit_ondestroy(void * x) {
   free(ctl->d);
   ag_setcaret(0, 0, 0);
 }
-byte acedit_onfocus(void * x) {
+byte acedit_onfocus(__unused void * x) {
   return 1;
 }
-void acedit_onblur(void * x) {}
+void acedit_onblur(__unused void * x) {}
 ACONTROLP acedit(
   AWINDOWP win,
   int x, int y, int w, int h,

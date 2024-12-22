@@ -188,7 +188,7 @@ typedef struct {
 //
 typedef struct {
   int sz;         // Data Size
-  byte * data;    // Data
+  char * data;    // Data
 } AZMEM;
 
 //

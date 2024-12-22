@@ -179,7 +179,7 @@ void ev_input_callback(struct input_event * ev) {
 }
 
 //-- INPUT THREAD
-static void * ev_input_thread(void * cookie) {
+static void * ev_input_thread(__unused void * cookie) {
   //-- Loop for Input
   while (evthread_active) {
     AINPUT_EVENT e;
@@ -289,7 +289,7 @@ int atouch_wait(ATEV * atev) {
   return atouch_wait_ex(atev, 0);
 }
 static int volume_down_pressed = 0;
-int atouch_wait_ex(ATEV * atev, byte calibratingtouch) {
+int atouch_wait_ex(ATEV * atev, __unused byte calibratingtouch) {
   atev->x = -1;
   atev->y = -1;
   

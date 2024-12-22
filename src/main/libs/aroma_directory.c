@@ -102,7 +102,7 @@ void aui_bytesize(char * buf, int val) {
     snprintf(buf, 64, "<#selectbg_g>%1.1f</#> MB",
              ((float)val) / 1048576);
   else if (val > 1024) {
-    snprintf(buf, 64, "<#selectbg_g>%i</#> KB", round(val / 1024));
+    snprintf(buf, 64, "<#selectbg_g>%f</#> KB", round(val / 1024));
   }
   else {
     snprintf(buf, 64, "<#selectbg_g>%i</#> Bytes", val);
@@ -269,7 +269,7 @@ int aui_fetch(char * path, ACONTROLP FB, char * selfile) {
             }
           }
           afbox_add(FB, dname,
-                    ((desc ==
+                    (((void*)desc ==
                       NULL) ?
                      alang_get("symlink.error") :
                      desc), 0,

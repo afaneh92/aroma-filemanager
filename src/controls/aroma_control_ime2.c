@@ -49,7 +49,7 @@ typedef struct {
   
 } ACIMED, * ACIMEDP;
 
-void acime2_sendmsg(ACONTROLP ctl, byte a2, byte a3, byte a4) {
+void acime2_sendmsg(ACONTROLP ctl, byte a2, __unused byte a3, byte a4) {
   ACIMEDP  d      = (ACIMEDP) ctl->d;
   dword msg = aw_msg(d->inputMsg, a2, (d->onCTRL ? 1 : 0), a4);
   
@@ -548,7 +548,7 @@ void acime2_drawbutton(ACIMEDP d, int x, int y, int w, int h, int id) {
     ag_roundgrad(&d->control_push, x + 1, y + 1, w - 2, h - 2,  acfg()->selectbg,       acfg()->selectbg_g,  acfg()->roundsz - 1);
   }
 }
-void acime2_onblur(void * x) {}
+void acime2_onblur(__unused void * x) {}
 ACONTROLP acime2(
   AWINDOWP win,
   int x, int y, int w, int h,

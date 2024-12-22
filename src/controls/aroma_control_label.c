@@ -33,7 +33,7 @@ typedef struct {
   color     cl;
 } ACLABELD, * ACLABELDP;
 
-dword aclabel_oninput(void * x, int action, ATEV * atev) {
+dword aclabel_oninput(__unused void * x, __unused int action, __unused ATEV * atev) {
   return 0;
 }
 void aclabel_ondraw(void * x) {
@@ -92,7 +92,7 @@ void aclabel_ondestroy(void * x) {
   free(d->text);
   free(ctl->d);
 }
-void aclabel_onblur(void * x) {
+void aclabel_onblur(__unused void * x) {
 }
 void aclabel_settext(ACONTROLP ctl, char * text, byte syncnow) {
   ACLABELDP  d    = (ACLABELDP) ctl->d;

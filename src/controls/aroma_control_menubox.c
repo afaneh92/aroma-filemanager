@@ -282,7 +282,7 @@ void acmenu_ondraw(void * x) {
   int minpadding = max(acfg()->roundsz, 4);
   int agdp3 = (agdp() * minpadding);
   int agdp6 = (agdp() * (minpadding * 2));
-  int agdpX = agdp6;
+  //int agdpX = agdp6;
   
   if (d->focused) {
     ag_draw(pc, &d->control_focused, ctl->x, ctl->y);
@@ -295,9 +295,9 @@ void acmenu_ondraw(void * x) {
   
   if (d->maxScrollY > 0) {
     //-- Glow
-    int i;
-    byte isST = (d->scrollY > 0) ? 1 : 0;
-    byte isSB = (d->scrollY < d->maxScrollY) ? 1 : 0;
+    //int i;
+    //byte isST = (d->scrollY > 0) ? 1 : 0;
+    //byte isSB = (d->scrollY < d->maxScrollY) ? 1 : 0;
     int add_t_y = 1;
     
     if (d->focused) {

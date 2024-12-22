@@ -168,7 +168,6 @@ byte alang_load_ex(AARRAYP * alang_v, char * z) {
   }
   
   byte state  = 0;
-  byte slash  = 0;
   char c      = 0;
   char pc     = 0;
   char * key  = NULL;

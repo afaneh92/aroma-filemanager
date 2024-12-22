@@ -25,7 +25,7 @@
  * Function : Translate RAW Keyboard data
  *
  */
-byte INDR_translate_keyboard(AINPUTP me, INDR_DEVICEP dev,
+byte INDR_translate_keyboard(__unused AINPUTP me, __unused INDR_DEVICEP dev,
                              AINPUT_EVENTP dest_ev, struct input_event * ev) {
   /* DUMP RAW EVENTS */
   //ALOGRT("INDR RAW KEY: T=%i, C=%i, V=%i",ev->type,ev->code,ev->value);

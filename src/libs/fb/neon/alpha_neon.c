@@ -35,7 +35,7 @@ static uint16x8_t __neon_const_msk_g;
 static uint16x8_t __neon_const_msk_b;
 
 /* init constants */
-inline void __neon_alpha_const_init(){
+static inline void __neon_alpha_const_init(){
   if (!__neon_const_initialized){
     __neon_const_xalph = vdupq_n_u16(0xff);   /* max value */
     __neon_const_zalph = vdupq_n_u16(0);      /* zero value */

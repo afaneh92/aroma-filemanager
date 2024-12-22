@@ -430,18 +430,18 @@ void acopt_ondraw(void * x) {
   int minpadding = 2;
   int agdp3 = (agdp() * minpadding);
   int agdp6 = (agdp() * (minpadding * 2));
-  int agdpX = agdp6;
+  //int agdpX = agdp6;
   ag_draw(pc, &d->control, ctl->x, ctl->y);
   // ag_draw_ex(pc,&d->client,ctl->x+agdp3,ctl->y+1,0,d->scrollY+1,ctl->w-agdp6,ctl->h-2);
   ag_draw_ex(pc, &d->client, ctl->x + agdp(), ctl->y + 1, 0, d->scrollY + 1, ctl->w - (agdp() * 2), ctl->h - 2);
   
   if (d->maxScrollY > 0) {
     //-- Glow
-    int i;
+    /*int i;
     byte isST = (d->scrollY > 0) ? 1 : 0;
     byte isSB = (d->scrollY < d->maxScrollY) ? 1 : 0;
     int add_t_y = 1;
-    /*
+
     for (i = 0; i < agdpX; i++) {
       byte alph = 80 - round((((float) (i + 1)) / ((float) agdpX)) * 80);
       ag_rectopa(pc, ctl->x, ctl->y + i + add_t_y, ctl->w, 1, 

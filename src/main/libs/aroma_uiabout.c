@@ -63,8 +63,7 @@ void auido_about_dialog(AWINDOWP parent) {
       padT = winv.t;
     }
   }
-  
-  int hpad = agdp() * 2;
+
   int winW = agw() - (pad * 2);	//-- Window
   int winX = pad;
   int cliW = winW - (padL + padR);	//-- Window Client
@@ -78,8 +77,6 @@ void auido_about_dialog(AWINDOWP parent) {
   int winY = (agh() / 2) - (winH / 2);
   int titY = winY + padT;
   int curY = titY + titH;
-  int defW = cliW - pad;
-  int txtX = cliX + hpad;
   
   //-- Draw Canvas
   if (!atheme_draw("img.dialog", &bg, winX, winY, winW, winH)) {
@@ -100,24 +97,17 @@ void auido_about_dialog(AWINDOWP parent) {
   apng_close(&imlogo);
   //-- Init Window & Controls
   AWINDOWP hWin = aw(&bg);
-  ACONTROLP txtTitle = aclabel(hWin, cliX + imgP, titY, cliW - imgP, titH,
-                               AROMA_NAME " " AROMA_VERSION, 1, 1, 1,
-                               acfg()->winfg);
-  ACONTROLP txtCopy =
-    aclabel(hWin, cliX + imgP, curY, cliW - imgP, txtH, AROMA_COPY, 0,
-            1, 1,
-            acfg()->winfg);
+  ACONTROLP txtTitle;
+  txtTitle = aclabel(hWin, cliX + imgP, titY, cliW - imgP, titH, AROMA_NAME " " AROMA_VERSION, 1, 1, 1, acfg()->winfg);
+  ACONTROLP txtCopy;
+  txtCopy = aclabel(hWin, cliX + imgP, curY, cliW - imgP, txtH, AROMA_COPY, 0, 1, 1, acfg()->winfg);
   curY += txtH;
-  ACONTROLP txtVersion =
-    aclabel(hWin, cliX + imgP, curY, cliW - imgP, txtH,
-            AROMA_BUILD_CN " (" AROMA_BUILD ")", 0, 1, 1,
-            acfg()->textfg_gray);
+  ACONTROLP txtVersion;
+  txtVersion = aclabel(hWin, cliX + imgP, curY, cliW - imgP, txtH, AROMA_BUILD_CN " (" AROMA_BUILD ")", 0, 1, 1, acfg()->textfg_gray);
   curY += txtH + pad;
   char * licensetxt = aui_readfromzip(AROMA_DIR "/common/license.txt");
-  ACONTROLP txtLicense = actext(hWin, cliX, curY, cliW, boxH,
-                                licensetxt ? licensetxt :
-                                "<@center>Cannot read license text...</@>",
-                                0);
+  ACONTROLP txtLicense;
+  txtLicense = actext(hWin, cliX, curY, cliW, boxH, licensetxt ? licensetxt : "<@center>Cannot read license text...</@>", 0);
                                 
   if (licensetxt) {
     free(licensetxt);
@@ -127,10 +117,8 @@ void auido_about_dialog(AWINDOWP parent) {
   int webW = floor(cliW / 1.618);
   int btnW = (cliW - webW);
   int btnX = cliX + webW;
-  ACONTROLP txtWeb =
-    aclabel(hWin, cliX, curY, webW, btnH,
-            AROMA_BUILD_URL "\n" AROMA_BUILD_A,
-            0, 1, 0, acfg()->textfg_gray);
+  ACONTROLP txtWeb;
+  txtWeb = aclabel(hWin, cliX, curY, webW, btnH, AROMA_BUILD_URL "\n" AROMA_BUILD_A, 0, 1, 0, acfg()->textfg_gray);
   ACONTROLP okBtn =
     imgbtn(hWin, btnX, curY, btnW, btnH, aui_icons(33), alang_get("ok"),
            3,

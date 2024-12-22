@@ -32,11 +32,11 @@ static ZipArchive zip;
 
 //-- Crawl Zip
 AZREADDIRP az_readdir(char * path) {
-  int pathlen = strlen(path);
+  size_t pathlen = strlen(path);
   char * pbuf = malloc(pathlen + 1);
   memset(pbuf, 0, pathlen + 1);
   AARRAYP res = aarray_create();
-  int i;
+  size_t i;
   
   for (i = 0; i < zip.numEntries; i++) {
     ZipEntry * ze = &zip.pEntries[i];
@@ -48,7 +48,7 @@ AZREADDIRP az_readdir(char * path) {
         int    fl = ze->fileNameLen - pathlen + 1;
         char * fn = malloc(fl);
         memset(fn, 0, fl);
-        int j;
+        size_t j;
         byte t = 0;
         
         for (j = pathlen; j < ze->fileNameLen; j++) {
@@ -74,10 +74,10 @@ AZREADDIRP az_readdir(char * path) {
     ret->n  = res->length;
     ret->f  = malloc(sizeof(char *)*ret->n);
     ret->t  = malloc(sizeof(byte) * ret->n);
-    
-    for (i = 0; i < res->length; i++) {
-      ret->t[i] = (strcmp(res->items[i].val, "1") == 0) ? 1 : 0;
-      ret->f[i] = strdup(res->items[i].key);
+    int k;
+    for (k = 0; k < res->length; k++) {
+      ret->t[k] = (strcmp(res->items[k].val, "1") == 0) ? 1 : 0;
+      ret->f[k] = strdup(res->items[k].key);
     }
   }
   

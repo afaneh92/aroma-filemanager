@@ -50,7 +50,6 @@ static byte                            agclp;
 static byte                            ag_font_onload = 0;
 static byte                            ag_oncopybusy = 0;
 static int                             ag_caret[4] = {0, 0, 0, 0}; //-- Caret, x,y,h,status
-static int                             screenshoot_cnt = 1;
 static int ag_line_length=0;
 /*
  RG B0 RG B0
@@ -93,7 +92,7 @@ static const byte dither_tresshold_b[64] = {
 int * ag_getcolorspace() {
   return colorspace_positions;
 }
-void ag_changecolorspace(int r, int g, int b, int a) {
+void ag_changecolorspace(int r, int g, int b, __unused int a) {
   LINUXFBDR_setrgbpos(libaroma_fb(),r,g,b);
 }
 color ag_dodither_rgb(int x, int y, byte sr, byte sg, byte sb) {
@@ -109,7 +108,7 @@ color ag_dodither(int x, int y, dword col) {
 
 
 /****************************[ DECLARED FUNCTIONS ]*****************************/
-static void * ag_thread(void * cookie);
+static void * ag_thread(__unused void * cookie);
 void ag_refreshrate();
 
 /*******************[ CALCULATING ALPHA COLOR WITH NEON ]***********************/
@@ -334,7 +333,7 @@ byte ag_draw_strecth_ex(
       for (j = 0; j < dw; j++) {
         x2   = (rat >> 16);
         *t = ag_calculatealpha(*t, p[x2], alpha);
-        *t++;
+        t++;
         rat += x_ratio;
       }
     }
@@ -378,7 +377,7 @@ byte ag_draw_opa(
   sh = (sh > s->h) ? s->h : sh;
   sw = (dx + sw > d->w) ? d->w - dx : sw;
   sh = (dy + sh > d->h) ? d->h - dy : sh;
-  int x, y;
+  int y;
 
 #ifdef LIBAROMA_CONFIG_OPENMP
   #pragma omp parallel for
@@ -464,7 +463,7 @@ int  ag_busywinW = 0;
 long ag_lastbusy = 0;
 
 //-- Refresh Thread
-static void * ag_thread(void * cookie) {
+static void * ag_thread(__unused void * cookie) {
   while (ag_isrun) {
     if (ag_isbusy != 2) {
       if (!ag_refreshlock) {
@@ -495,7 +494,6 @@ void ag_copybusy(char * wait) {
   }
   ag_oncopybusy = 1;
   //char * wait = "Please Wait...";
-  int pad     = agdp() * 50;
   int txtW    = ag_txtwidth(wait, 0);
   int txtH    = ag_fontheight(0);
   int txtX    = (agw() / 2) - (txtW / 2);
@@ -557,7 +555,7 @@ void ag_drawcaret() {
         for (j = 0; j < crw; j++) {
           int xpos = ypos + ((ag_caret[0] + j) * agclp);
           if (xpos >= 0) {
-            if (xpos < (ag_fbsz - 2)) {
+            if (xpos < ((int)ag_fbsz - 2)) {
               int  xp     = xpos / 2;
               word fbc    = ag_fbuf[xp];
               byte nr     = 255 - ag_r(fbc);
@@ -653,7 +651,7 @@ static void * ag_sync_fade_thread(void * cookie) {
   ag_sync_locked = 1;
   ag_refreshlock = 1;
 
-  int i, x, y;
+  int i;
   
   for (i = 0; (i < (frame / 2)) && ag_sync_locked; i++) {
     byte perc = (255 / frame) * i;
@@ -1273,7 +1271,6 @@ byte ag_roundgrad_ex(CANVAS * _b, int x, int y, int w, int h, color cl1, color c
       int fy    = floor(yp);
       float ax  = xp - fx;
       float ay  = yp - fy;
-      float sz  = ax + ay;
       
       if ((fx >= 0) && (fy >= 0) && (fx < roundsz) && (fy < roundsz)) {
         ag_rndsave(rndata[fx + fy * roundsz], 1 - ax, 1 - ay);
@@ -1322,7 +1319,6 @@ byte ag_roundgrad_ex(CANVAS * _b, int x, int y, int w, int h, color cl1, color c
   byte * qe   = (byte*) malloc(qz);
   memset(qe,0,qz);
   */
-  byte qepos  = 0;
   int  qz     = w * 6;
   byte * qe   = malloc(qz);
   memset(qe, 0, qz);
@@ -1330,7 +1326,7 @@ byte ag_roundgrad_ex(CANVAS * _b, int x, int y, int w, int h, color cl1, color c
   //-- LOOPS
   for (yy = y; yy < y2; yy++) {
     //-- Vertical Pos
-    int z   = yy * _b->w;
+    //int z   = yy * _b->w;
     //int zq  = (yy-y) * w;
     //-- Calculate Row Color
     byte falpha = (byte) min((((float) 255 / h) * (yy - y)), 255);
@@ -1344,7 +1340,7 @@ byte ag_roundgrad_ex(CANVAS * _b, int x, int y, int w, int h, color cl1, color c
     memset(qe + (qn * w * 3), 0, w * 3);
     
     for (xx = x; xx < x2; xx++) {
-      int qx = (qp * w + (xx - x)) * 3;
+      //int qx = (qp * w + (xx - x)) * 3;
       color * dx = agxy(_b, xx, yy);
       
       if (dx != NULL) {
@@ -1541,8 +1537,7 @@ byte ag_drawchar_ex2(CANVAS * _b, int x, int y, int c, color cl, byte isbig, byt
   if (isfreetype) {
     return aft_drawfont(_b, isbig, c, x, y, cl, underline, bold, italic, lcd);
   }
-  
-  int yy, xx;
+
   y++;
   int cd = ((int) c) - 32;
   
@@ -1881,13 +1876,9 @@ int ag_txtwidth(const char * ss, byte isbig) {
   }
   
   int w = 0;
-  int x = 0;
-  int  i = 0;
-  char tb[8];
   int off;
   int move = 0;
   int p = 0;
-  byte isfreetype = isbig ? AG_BIG_FONT_FT : AG_SMALL_FONT_FT;
   char * sams   = alang_ams(ss);
   const char * s = sams;
   
@@ -1965,7 +1956,7 @@ int ag_txt_getline(const char * s, int maxwidth_ori, byte isbig, byte * ischange
   int  w = 0; //-- Current Width
   int  p = -1; //-- Previous Space Pos
   int  maxwidth = maxwidth_ori - indent[0];
-  byte isfreetype = isbig ? AG_BIG_FONT_FT : AG_SMALL_FONT_FT;
+  //byte isfreetype = isbig ? AG_BIG_FONT_FT : AG_SMALL_FONT_FT;
   int  indentsz = (ag_fontwidth(' ', isbig) * 2) + ag_bulletwidth(isbig); // +ag_fontwidth(isfreetype?0x2022:0xa9,isbig);
   byte fns = 0; //-- No Space Exists
   int  move = 0;

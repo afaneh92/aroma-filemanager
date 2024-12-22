@@ -139,7 +139,7 @@ byte INDR_init_device(INDR_INTERNALP mi, int fd, INDR_DEVICEP dev);
  * Function : Check Blacklisted Devices
  *
  */
-byte INDR_blacklist(char * name) {
+byte INDR_blacklist(__unused char * name) {
   /* Not Blacklisted */
   return 0;
 }
@@ -379,7 +379,7 @@ byte INDR_getdevclass(int fd) {
  * Function : Init Device
  *
  */
-byte INDR_init_device(INDR_INTERNALP mi, int fd, INDR_DEVICEP dev) {
+byte INDR_init_device(__unused INDR_INTERNALP mi, int fd, INDR_DEVICEP dev) {
   /* Virtual Key Path */
   char    vk_path[PATH_MAX] = "/sys/board_properties/virtualkeys.";
   char  * ts = NULL;

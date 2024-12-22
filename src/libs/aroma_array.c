@@ -94,7 +94,6 @@ byte aarray_set(AARRAYP a, char * key, char * val) {
 }
 
 byte aarray_del(AARRAYP a, char * key) {
-  int found_id = -1;
   int i;
   
   if (!a || !key) {

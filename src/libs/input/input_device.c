@@ -24,12 +24,6 @@
 #define AINPUT_KEYCODE_MAX      0x200
 #define AINPUT_TOUCH_KEYCODE    (AINPUT_KEYCODE_MAX-1)
 
-/* Pointer Integers */
-typedef byte * bytep;
-typedef word * wordp;
-typedef dword * dwordp;
-typedef void * voidp;
-
 /* AROMA Core Input Instance */
 typedef struct _AINPUT_STRUCT         AINPUT;
 typedef struct _AINPUT_STRUCT    *    AINPUTP;

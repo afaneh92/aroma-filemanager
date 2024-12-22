@@ -175,7 +175,7 @@ char * auifav_getpath(dword id) {
   char * tok = strtok(buf, ";");
   
   while (tok) {
-    if (n++ == id) {
+    if (n++ == (int)id) {
       ret = strdup(tok);
       break;
     }
@@ -188,20 +188,17 @@ char * auifav_getpath(dword id) {
 }
 
 byte
-auifav_win(CANVAS * bg, char * path, char ** out_char, int titY, int titH,
+auifav_win(CANVAS * bg, __unused char * path, char ** out_char, int titY, int titH,
            int boxY, int boxH, byte first) {
   int btnS = agdp() * 20;
   int btnP = agdp() * 2;
   AWINDOWP hWin = aw(bg);
-  ACONTROLP title =
-    aclabel(hWin, btnS + btnP, titY, agw() - ((btnS + btnP) * 2), titH,
-            alang_get("tools.favorite"), 1, 1, 2, acfg()->winfg);
-  ACONTROLP addthis =
-    imgbtn(hWin, btnP, titY + btnP, btnS, btnS, aui_icons(6), NULL, 1,
-           55);
-  ACONTROLP cancel =
-    imgbtn(hWin, agw() - (btnS + btnP), titY + btnP, btnS, btnS,
-           aui_icons(0), NULL, 1, 5);
+  ACONTROLP title;
+  title = aclabel(hWin, btnS + btnP, titY, agw() - ((btnS + btnP) * 2), titH, alang_get("tools.favorite"), 1, 1, 2, acfg()->winfg);
+  ACONTROLP addthis;
+  addthis = imgbtn(hWin, btnP, titY + btnP, btnS, btnS, aui_icons(6), NULL, 1, 55);
+  ACONTROLP cancel;
+  cancel = imgbtn(hWin, agw() - (btnS + btnP), titY + btnP, btnS, btnS, aui_icons(0), NULL, 1, 5);
   ACONTROLP hFile = afbox(hWin, 0, boxY, agw(), boxH, 7, 8, 2, 6);
   auifav_fetch(hFile);
   aw_show_ex(hWin, first ? 1 : 100, titY, hFile);

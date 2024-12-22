@@ -106,13 +106,11 @@ byte auido_setperm(AWINDOWP parent, char * path, char * fn) {
   
   //-- Init Window & Controls
   AWINDOWP hWin = aw(&bg);
-  ACONTROLP txtTitle =
-    aclabel(hWin, cliX, _Y, cliW, titH,
-            alang_get("tools.chmod"), 1, 1, 2, acfg()->winfg);
+  ACONTROLP txtTitle;
+  txtTitle = aclabel(hWin, cliX, _Y, cliW, titH, alang_get("tools.chmod"), 1, 1, 2, acfg()->winfg);
   _Y += titH;
-  ACONTROLP txtFilename =
-    aclabel(hWin, cliX, _Y, cliW, txtH,
-            fn, 0, 1, 2, acfg()->winfg);
+  ACONTROLP txtFilename;
+  txtFilename = aclabel(hWin, cliX, _Y, cliW, txtH, fn, 0, 1, 2, acfg()->winfg);
   _Y += txtH + pad;
   int colW = cliW / 4;
   int col1 = cliX;
@@ -146,8 +144,8 @@ byte auido_setperm(AWINDOWP parent, char * path, char * fn) {
   int btn2 = btn1 + btnW;
   ACONTROLP okBtn =
     imgbtn(hWin, btn1, _Y, btnW - (pad / 2), btnH, aui_icons(33), alang_get("ok"), 3, 6);
-  ACONTROLP cancelBtn =
-    imgbtn(hWin, btn2 + (pad / 2), _Y, btnW - (pad / 2), btnH, aui_icons(0), alang_get("cancel"), 3, 5);
+  ACONTROLP cancelBtn;
+  cancelBtn = imgbtn(hWin, btn2 + (pad / 2), _Y, btnW - (pad / 2), btnH, aui_icons(0), alang_get("cancel"), 3, 5);
   //-- Show Window
   //aw_show_ex(hWin, 0, 0, okBtn);
   aw_show_ex2(hWin, 5, winX - 1, winY - 1, winW + 2, winH + 2, okBtn);
