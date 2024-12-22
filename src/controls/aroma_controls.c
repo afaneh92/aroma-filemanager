@@ -1421,6 +1421,7 @@ byte aw_calibtools(AWINDOWP parent) {
            NULL);
   return 1;
 }
+/*
 byte aw_calibtools_old(AWINDOWP parent) {
   int USE_HACK = aw_confirm(
                    parent,
@@ -1508,14 +1509,14 @@ doneit:
     //char msg_calib[256];
     //snprintf(msg_calib,256,"%s\n\nDo you want to use the current calibrated data in the current process?",data_calib);
     dont_restore_caldata = 1;
-    /*aw_confirm(
+    aw_confirm(
       parent,
       "Calibration Data",
       msg_calib,
       aui_icons(9),
       NULL,
       NULL
-    );*/
+    );
   }
   
   if (!dont_restore_caldata) {
@@ -1525,6 +1526,7 @@ doneit:
   
   return isvalid;
 }
+*/
 byte aw_menu(AWINDOWP parent, char * title, AWMENUITEMP mi, int n) {
   if (n < 1) {
     return 0;

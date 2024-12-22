@@ -20,6 +20,8 @@
  * AROMA File Manager Favorite UI
  *
  */
+#include <aroma.h>
+
 byte auifav_isfav(const char * path_src) {
   const char * path = path_src;
   char * o = aarray_get(aui_cfg_array, "favorites");

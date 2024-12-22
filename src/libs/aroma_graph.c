@@ -648,7 +648,7 @@ void ag_sync_force() {
   ag_sync();
 }
 static void * ag_sync_fade_thread(void * cookie) {
-  int frame = (int) cookie;
+  long frame = (long) cookie;
   ag_isbusy = 0;
   ag_sync_locked = 1;
   ag_refreshlock = 1;
@@ -669,12 +669,12 @@ static void * ag_sync_fade_thread(void * cookie) {
   return NULL;
 }
 void ag_sync_fade_wait(int frame) {
-  ag_sync_fade_thread((void *) frame);
+  ag_sync_fade_thread((void *)(uintptr_t) frame);
   //ag_sync();
 }
 void ag_sync_fade(int frame) {
   pthread_t threadsyncfade;
-  pthread_create(&threadsyncfade, NULL, ag_sync_fade_thread, (void *) frame);
+  pthread_create(&threadsyncfade, NULL, ag_sync_fade_thread, (void *)(uintptr_t) frame);
   pthread_detach(threadsyncfade);
   // ag_sync();
 }

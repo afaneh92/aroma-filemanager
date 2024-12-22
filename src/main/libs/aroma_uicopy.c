@@ -20,6 +20,8 @@
  * AROMA File Manager : Copy File
  *
  */
+#include <aroma.h>
+
 byte
 auido_next_copy_size(AFSDTP dt, int * curr_id, byte * copy_status,
                      char ** source_path, int number_files) {

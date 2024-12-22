@@ -20,7 +20,8 @@
  * AROMA File Manager Terminal
  *
  */
-
+#include <pty.h>
+#include <aroma.h>
 
 /* Terminal Structure */
 typedef struct {
